@@ -28,6 +28,13 @@
   }
 }
 
+.avatar-image {
+  width: 100%;
+  max-width: 650px;
+  height: auto;
+}
+
+// 保留佔位符樣式作為後備
 .placeholder-image {
   display: flex;
   justify-content: center;

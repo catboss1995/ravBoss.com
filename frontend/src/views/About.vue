@@ -35,17 +35,22 @@
       </div>
 
       <div class="about-image">
-        <div class="placeholder-image">
-          <p>冒險者肖像</p>
-        </div>
+        <img :src="avatarImage" alt="冒險者肖像" class="avatar-image" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import avatarImage from '../assets/me.png';
+
 export default {
   name: "About",
+  computed: {
+    avatarImage() {
+      return avatarImage;
+    }
+  }
 };
 </script>
 

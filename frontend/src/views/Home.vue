@@ -33,7 +33,7 @@
 
         <p>記錄著每一次冒險的精彩瞬間和創作軌跡。</p>
 
-        <router-link to="/portfolio" class="btn">翻閱日誌</router-link>
+        <router-link to="/news" class="btn">翻閱日誌</router-link>
       </div>
 
       <div class="card">
@@ -154,6 +154,7 @@
 
 <script>
 import ImageManager from '../../../config/images.js';
+import fantasyRiverScene from '../assets/fantasy-river-scene.jpg';
 
 export default {
   name: "Home",
@@ -248,8 +249,8 @@ export default {
   computed: {
     // 英雄橫幅背景圖片
     heroBannerUrl() {
-      // 使用本地圖片路徑
-      return '/images/banners/fantasy-river-scene.jpg';
+      // 使用 assets 導入的圖片
+      return fantasyRiverScene;
     },
     
     // 篩選後的資料
