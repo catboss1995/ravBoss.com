@@ -1,24 +1,28 @@
+<style lang="scss" scoped>
+@use "../styles/terms.scss" as *;
+</style>
+
 <template>
   <div class="page-container">
-    <h1 class="page-title">服務條款</h1>
+    <h1 class="page-title">契約卷軸 Terms & Conditions</h1>
     
     <div class="terms-content">
       <section class="terms-section">
-        <h2>1. 服務範圍</h2>
+        <h2>1. 鍛造範圍</h2>
         <p>
-          RavBoss.com 提供包括但不限於插畫設計、角色設計、概念美術、商業設計等創作服務。
-          具體服務內容以雙方確認的委託合約為準。
+          本鐵匠鋪提供包括但不限於奇幻插畫、角色設定、世界觀設計、概念藝術等創作服務。
+          具體鍛造內容以雙方確認的鍛造契約為準。
         </p>
       </section>
       
       <section class="terms-section">
-        <h2>2. 委託流程</h2>
+        <h2>2. 鍛造流程</h2>
         <ul>
-          <li>客戶提交委託需求和相關資料</li>
-          <li>我們提供報價和預計完成時間</li>
-          <li>客戶確認委託並支付訂金（通常為總金額的50%）</li>
-          <li>開始創作並定期提供進度更新</li>
-          <li>完成作品並交付，客戶支付尾款</li>
+          <li>冒險者提交鍛造需求和設計要求</li>
+          <li>鐵匠評估材料成本並提供報價</li>
+          <li>冒險者確認訂單並支付訂金（通常為總金額的50%）</li>
+          <li>開始鍛造並定期回報進度</li>
+          <li>完成道具並交付，冒險者支付尾款</li>
         </ul>
       </section>
       
@@ -92,58 +96,3 @@ export default {
   name: 'Terms'
 }
 </script>
-
-<style scoped>
-.terms-content {
-  max-width: 800px;
-  margin: 0 auto;
-  line-height: 1.8;
-}
-
-.terms-section {
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #ecf0f1;
-}
-
-.terms-section:last-of-type {
-  border-bottom: none;
-}
-
-.terms-section h2 {
-  color: #2c3e50;
-  margin-bottom: 1rem;
-  font-size: 1.3rem;
-}
-
-.terms-section p {
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
-}
-
-.terms-section ul {
-  margin-left: 1.5rem;
-  color: #2c3e50;
-}
-
-.terms-section li {
-  margin-bottom: 0.5rem;
-}
-
-.terms-footer {
-  background-color: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 8px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-.terms-footer p {
-  margin-bottom: 0.5rem;
-  color: #7f8c8d;
-}
-
-.terms-footer p:last-child {
-  margin-bottom: 0;
-}
-</style>

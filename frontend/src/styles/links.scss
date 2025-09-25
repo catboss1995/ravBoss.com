@@ -1,0 +1,48 @@
+// Links.vue (冒險者) 頁面樣式
+.links-grid {
+  gap: 1.5rem;
+}
+
+.links-category {
+  height: fit-content;
+}
+
+.links-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: .75rem;
+}
+
+.link-item {
+  display: flex;
+  flex-direction: column;
+  padding: .75rem;
+  text-decoration: none;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  transition: background-color .3s, transform .2s;
+
+  &:hover {
+    background-color: #e9ecef;
+    transform: translateX(5px);
+  }
+}
+
+.link-name {
+  margin-bottom: .25rem;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.link-description {
+  color: #7f8c8d;
+  font-size: .9rem;
+}
+
+// 響應式設計
+@media (max-width: 768px) {
+  .links-grid {
+    grid-template-columns: 1fr;
+  }
+}

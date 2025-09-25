@@ -1,6 +1,10 @@
+<style lang="scss" scoped>
+@use "../styles/store.scss" as *;
+</style>
+
 <template>
   <div class="page-container">
-    <h1 class="page-title">商店</h1>
+    <h1 class="page-title">商鋪 Artifact Shop</h1>
     
     <div v-if="loading" class="loading">
       <div class="spinner"></div>
@@ -36,7 +40,7 @@
             <p class="product-description">{{ product.description }}</p>
             <div class="product-price">
               <span class="price">NT$ {{ product.price }}</span>
-              <button class="btn btn-success">加入購物車</button>
+              <button class="btn btn-success">加入<br>購物車</button>
             </div>
           </div>
         </div>
@@ -55,7 +59,7 @@ export default {
       products: [],
       loading: true,
       selectedCategory: '全部',
-      categories: ['全部', '原創商品', '周邊商品', '數位商品', '限定商品']
+      categories: ['全部', '魔法道具', '冒險裝備', '珍藏物品', '限量寶物']
     }
   },
   computed: {
@@ -80,23 +84,23 @@ export default {
         this.products = [
           {
             id: 1,
-            name: '限定插畫集',
-            category: '原創商品',
-            description: '精選原創插畫作品集',
+            name: '奇幻冒險畫冊',
+            category: '魔法道具',
+            description: '記錄著精彩冒險故事的畫冊',
             price: 800
           },
           {
             id: 2,
-            name: '角色貼紙組',
-            category: '周邊商品',
-            description: '可愛角色貼紙套組',
+            name: '角色徽章套組',
+            category: '冒險裝備',
+            description: '精緻角色徽章收藏套組',
             price: 150
           },
           {
             id: 3,
-            name: '數位桌布包',
-            category: '數位商品',
-            description: '高解析度桌布圖包',
+            name: '魔法壁紙寶盒',
+            category: '珍藏物品',
+            description: '高品質奇幻壁紙收藏包',
             price: 300
           }
         ]
@@ -107,61 +111,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.store-categories {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.products-grid {
-  margin-top: 1rem;
-}
-
-.product-item {
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.product-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-}
-
-.placeholder-image {
-  background-color: #ecf0f1;
-  height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  color: #7f8c8d;
-  margin-bottom: 1rem;
-}
-
-.product-category {
-  color: #3498db;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
-.product-description {
-  color: #7f8c8d;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.product-price {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.price {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #e74c3c;
-}
-</style>

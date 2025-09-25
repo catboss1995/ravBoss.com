@@ -1,38 +1,42 @@
+<style lang="scss" scoped>
+@use "../styles/about.scss" as *;
+</style>
+
 <template>
   <div class="page-container">
-    <h1 class="page-title">關於我們</h1>
-    
+    <h1 class="page-title">冒險者檔案 About the Artist</h1>
+
     <div class="about-content">
       <div class="about-text">
-        <h2>RavBoss 創作工作室</h2>
+        <h2>冒險者的故事</h2>
         <p>
-          歡迎來到 RavBoss 創作工作室！我們是一個專注於提供高品質創作服務的團隊，
-          致力於為客戶帶來獨特而專業的創作體驗。
+          歡迎查閱我的冒險者檔案！我是一位穿梭在現實與幻想之間的創作者，
+          專精於將腦海中的奇幻世界透過畫筆帶到現實中。
         </p>
-        
-        <h3>我們的服務</h3>
+
+        <h3>冒險技能</h3>
         <ul>
-          <li>插畫設計</li>
-          <li>角色設計</li>
-          <li>概念美術</li>
-          <li>商業設計</li>
-          <li>客製化委託</li>
+          <li>奇幻插畫</li>
+          <li>角色設定</li>
+          <li>世界觀設計</li>
+          <li>概念藝術</li>
+          <li>委託創作</li>
         </ul>
-        
-        <h3>聯絡資訊</h3>
+
+        <h3>聯絡方式</h3>
         <p>
-          如果您對我們的服務有任何疑問，或想要進行委託創作，
-          歡迎透過以下方式聯絡我們：
+          想要進行委託或有任何疑問嗎？歡迎透過以下方式與我聯絡，
+          讓我們一起踏上創作的冒險旅程！
         </p>
         <ul>
-          <li>Email: contact@ravboss.com</li>
-          <li>電話: +886-123-456-789</li>
+          <li>魔法信件: contact@ravboss.com</li>
+          <li>水晶球通訊: +886-123-456-789</li>
         </ul>
       </div>
-      
+
       <div class="about-image">
         <div class="placeholder-image">
-          <p>工作室照片</p>
+          <p>冒險者肖像</p>
         </div>
       </div>
     </div>
@@ -41,50 +45,8 @@
 
 <script>
 export default {
-  name: 'About'
-}
+  name: "About",
+};
 </script>
 
-<style scoped>
-.about-content {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  align-items: start;
-}
 
-.about-text h2 {
-  color: #2c3e50;
-  margin-bottom: 1rem;
-}
-
-.about-text h3 {
-  color: #34495e;
-  margin: 1.5rem 0 0.5rem 0;
-}
-
-.about-text ul {
-  margin-left: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.about-text li {
-  margin-bottom: 0.5rem;
-}
-
-.placeholder-image {
-  background-color: #ecf0f1;
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  color: #7f8c8d;
-}
-
-@media (max-width: 768px) {
-  .about-content {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

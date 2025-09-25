@@ -1,33 +1,46 @@
+<style lang="scss" scoped>
+@use "../styles/home.scss" as *;
+</style>
+
 <template>
   <div class="page-container">
-    <h1 class="page-title">歡迎來到 RavBoss.com</h1>
-    
+    <h1 class="page-title">旅程起點 Journey Start</h1>
+
     <div class="hero-section">
-      <h2>專業的創作服務</h2>
-      <p>提供高品質的設計和創作服務，包含插畫、設計、委託創作等。</p>
+      <h2>歡迎來到冒險者的世界</h2>
+
+      <p>這裡是你冒險旅程的起點，記錄著每一個精彩瞬間和創作故事。</p>
+
       <div class="hero-buttons">
-        <router-link to="/portfolio" class="btn btn-primary">查看作品</router-link>
-        <router-link to="/commission" class="btn btn-success">開始委託</router-link>
+        <router-link to="/portfolio" class="btn btn-primary">翻閱冒險相簿</router-link>
+
+        <router-link to="/commission" class="btn btn-success">前往鐵匠鋪</router-link>
       </div>
     </div>
 
     <div class="features grid grid-3">
       <div class="card">
-        <h3 class="card-title">專業作品集</h3>
-        <p>瀏覽我們的精選作品，感受專業的創作品質。</p>
-        <router-link to="/portfolio" class="btn">查看更多</router-link>
+        <h3 class="card-title">冒險相簿</h3>
+
+        <p>記錄著每一次冒險的精彩瞬間和創作軌跡。</p>
+
+        <router-link to="/portfolio" class="btn">翻閱更多</router-link>
       </div>
-      
+
       <div class="card">
-        <h3 class="card-title">委託服務</h3>
-        <p>提供客製化的創作服務，滿足您的特殊需求。</p>
+        <h3 class="card-title">鐵匠鋪</h3>
+
+        <p>為你打造專屬的裝備和道具，滿足冒險需求。</p>
+
         <router-link to="/commission" class="btn">立即委託</router-link>
       </div>
-      
+
       <div class="card">
-        <h3 class="card-title">最新公告</h3>
-        <p>了解最新消息和服務更新。</p>
-        <router-link to="/announcements" class="btn">查看公告</router-link>
+        <h3 class="card-title">告示板</h3>
+
+        <p>查看最新的冒險資訊和重要公告。</p>
+
+        <router-link to="/board" class="btn">查看告示</router-link>
       </div>
     </div>
   </div>
@@ -35,37 +48,7 @@
 
 <script>
 export default {
-  name: 'Home'
-}
+  name: "Home",
+};
 </script>
 
-<style scoped>
-.hero-section {
-  text-align: center;
-  padding: 3rem 0;
-  margin-bottom: 2rem;
-}
-
-.hero-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #2c3e50;
-}
-
-.hero-section p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  color: #7f8c8d;
-}
-
-.hero-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.features {
-  margin-top: 2rem;
-}
-</style>

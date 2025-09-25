@@ -6,11 +6,11 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-console.log('🚀 正在啟動 RavBoss 後端伺服器...');
-console.log('📊 環境:', process.env.NODE_ENV);
-console.log('🔌 連接埠:', PORT);
+console.log('正在啟動 RavBoss 後端伺服器...');
+console.log('環境:', process.env.NODE_ENV || 'development');
+console.log('連接埠:', PORT);
 
 // 中間件
 app.use(helmet());
@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 連接 MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ravboss', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ravboss-adventure', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -39,11 +39,15 @@ app.get('/', (req, res) => {
 });
 
 // 引入路由模組
+const authRoutes = require('./routes/auth');
+const postsRoutes = require('./routes/posts');
 const portfolioRoutes = require('./routes/portfolio');
 const commissionRoutes = require('./routes/commission');
 const storeRoutes = require('./routes/store');
 const announcementRoutes = require('./routes/announcements');
 
+app.use('/api/auth', authRoutes);
+app.use('/api/posts', postsRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/commission', commissionRoutes);
 app.use('/api/store', storeRoutes);
