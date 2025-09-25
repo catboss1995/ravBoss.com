@@ -49,7 +49,7 @@ ravBoss.com/
 
 1. **複製專案**
    ```bash
-   git clone https://github.com/yourusername/ravBoss.com.git
+   git clone https://github.com/catboss1995/ravBoss.com.git
    cd ravBoss.com
    ```
 
@@ -160,7 +160,7 @@ CORS_ORIGIN=https://yourdomain.com
 ## 聯絡
 
 - 網站：https://ravboss.com
-- Email：contact@ravboss.com
+- Email：catboss1995@aol.com
 
 ## 更新日誌
 
