@@ -1,0 +1,46 @@
+// About.vue (工會資訊) 頁面樣式
+.about-content {
+  display: grid;
+  align-items: start;
+
+  gap: 2rem;
+  grid-template-columns: 2fr 1fr;
+}
+
+.about-text {
+  h2 {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+  }
+
+  h3 {
+    margin: 1.5rem 0 .5rem 0;
+    color: #34495e;
+  }
+
+  ul {
+    margin-bottom: 1rem;
+    margin-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: .5rem;
+  }
+}
+
+.placeholder-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  color: #7f8c8d;
+  background-color: #ecf0f1;
+  border-radius: 8px;
+}
+
+// 響應式設計
+@media (max-width: 768px) {
+  .about-content {
+    grid-template-columns: 1fr;
+  }
+}
