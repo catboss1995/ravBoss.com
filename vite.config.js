@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,6 +15,6 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: path.resolve(__dirname, '../dist')  // 輸出到儲存庫根目錄下的 dist 資料夾
+    outDir: 'dist'  // 輸出到當前目錄下的 dist 資料夾
   }
 })
