@@ -33,12 +33,18 @@ export class ImageManager {
     const categoryMap = {
       '全部': 'all.jpg',
       '場景插畫': 'scene.jpg', 
-      '人物插畫': 'character.jpg',
+      '人物插畫': 'character.jpg', // 使用 public 資料夾中的圖片
       '手繪': 'handdrawn.jpg',
-      '隨筆/塗鴉/梗圖': 'sketch.jpg'
+      '隨筆/塗鴉/梗圖': 'sketch.jpg',
     };
     
     const filename = categoryMap[category] || 'default.jpg';
+    
+    // 特殊處理本地圖片
+    if (category === '人物插畫') {
+      return filename; // 直接返回 public 資料夾路徑
+    }
+    
     return `${imageConfig.CDN_BASE}/categories/${filename}`;
   }
   
