@@ -14,9 +14,18 @@
           v-for="card in businessCards" 
           :key="card.name"
           class="business-card"
-          :style="{ '--bg-image': `url(${card.backgroundImage})` }"
         >
-          <div class="card-background"></div>
+          <div 
+            class="card-background"
+            :style="{ 
+              backgroundImage: card.backgroundImage ? `url(${card.backgroundImage})` : 'none',
+              background: !card.backgroundImage ? card.background : 'none'
+            }"
+          ></div>
+          <!-- 調試用，顯示圖片路徑 -->
+          <div v-if="card.id === 1" style="position: absolute; top: 5px; left: 5px; font-size: 10px; background: rgba(0,0,0,0.5); color: white; padding: 2px;">
+            {{ card.backgroundImage }}
+          </div>
           <div class="card-content">
             <div class="card-avatar">
               <img :src="card.avatar" :alt="card.name" />
@@ -195,7 +204,9 @@
 </template>
 
 <script>
+// 匯入圖片
 import logoImage from '../assets/LOGO-s.png'
+import bg01 from '../assets/fantasy-river-scene.jpg'
 
 export default {
   name: "Links",
@@ -278,33 +289,29 @@ export default {
       businessCards: [
         {
           id: 1,
-          avatar: "https://via.placeholder.com/60x60/667eea/ffffff?text=JD",  // 可替換為真實頭像
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          name: "John Designer",
-          location: "台北，台灣",
-          title: "UI/UX 設計師",
+          avatar: "https://catboss1995.github.io/resume-portfolio/assets/profile-fEj_plNt.jpg",
+          backgroundImage: "../assets/fantasy-river-scene.jpg",
+          name: "連璽臻",
+          location: "台北，士林", 
+          title: "前端 / UIUX設計 / 插畫",
           company: "創意工作室",
           description: "專精於品牌視覺設計與使用者體驗",
-          links: [
-            { name: "作品集", url: "https://johndoe.design", icon: "🎨" },
-            { name: "LinkedIn", url: "https://linkedin.com/in/johndoe", icon: "💼" },
-            { name: "Instagram", url: "https://instagram.com/johndoe", icon: "📸" }
-          ]
+          portfolio: "https://lihi.cc/P1SXc",
+          contact: "mailto:catboss1995@aol.com",
+          support: "https://support.example.com"
         },
         {
           id: 2,
-          avatar: null,  // 使用已匯入的 LOGO
+          avatar: "https://assets.codepen.io/1807688/internal/avatars/users/default.png?fit=crop&format=auto&height=512&version=1617384712&width=512",  // 使用已匯入的 LOGO
           background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
           name: "創作夥伴",
           location: "高雄，台灣",
           title: "動畫師",
           company: "動畫工作室",
           description: "2D/3D 動畫製作與角色設計",
-          links: [
-            { name: "作品展示", url: "https://example.com/portfolio", icon: "🎬" },
-            { name: "聯絡我們", url: "mailto:contact@example.com", icon: "📧" },
-            { name: "Facebook", url: "https://facebook.com/example", icon: "📘" }
-          ]
+          portfolio: "https://tutorial.jumpdesign.tw/",
+          contact: "mailto:catboss1995@aol.com",
+          support: "https://www.ntubimdbirc.tw/course/20250313I002"
         },
         {
           id: 3,
@@ -316,9 +323,9 @@ export default {
           company: "科技新創",
           description: "Vue.js & React 開發專家",
           links: [
-            { name: "GitHub", url: "https://github.com/techcreator", icon: "💻" },
-            { name: "技術部落格", url: "https://techblog.example.com", icon: "📝" },
-            { name: "Twitter", url: "https://twitter.com/techcreator", icon: "🐦" }
+            { name: "GitHub", url: "https://github.com/techcreator", icon: "" },
+            { name: "技術部落格", url: "https://techblog.example.com", icon: "" },
+            { name: "Twitter", url: "https://twitter.com/techcreator", icon: "" }
           ]
         }
       ]
