@@ -74,11 +74,11 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body
-        console.log('🔍 登入請求:', { username, password: '***' })
+        console.log('登入請求:', { username, password: '***' })
 
         // 驗證必填欄位
         if (!username || !password) {
-            console.log('❌ 缺少必填欄位')
+            console.log('缺少必填欄位')
             return res.status(400).json({
                 message: '請輸入用戶名和密碼'
             })
@@ -88,10 +88,10 @@ router.post('/login', async (req, res) => {
         const user = await User.findOne({
             $or: [{ username }, { email: username }]
         })
-        console.log('👤 找到用戶:', user ? user.username : '無')
+        console.log('找到用戶:', user ? user.username : '無')
 
         if (!user) {
-            console.log('❌ 用戶不存在')
+            console.log('用戶不存在')
             return res.status(401).json({
                 message: '用戶名或密碼錯誤'
             })
@@ -99,10 +99,10 @@ router.post('/login', async (req, res) => {
 
         // 驗證密碼
         const isPasswordValid = await user.comparePassword(password)
-        console.log('🔐 密碼驗證結果:', isPasswordValid)
+        console.log('密碼驗證結果:', isPasswordValid)
 
         if (!isPasswordValid) {
-            console.log('❌ 密碼驗證失敗')
+            console.log('密碼驗證失敗')
             return res.status(401).json({
                 message: '用戶名或密碼錯誤'
             })

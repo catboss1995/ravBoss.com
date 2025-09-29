@@ -4,199 +4,94 @@
 
 <template>
   <div class="page-container">
-    <h1 class="page-title">旅伴名冊 Fellow Allies</h1>
+    <h1 class="page-title">商會夥伴 Fellow Allies</h1>
 
     <!-- 名片區域 -->
     <div class="business-cards-section">
-      <h2 class="section-title">盟友名片</h2>
       <div class="business-cards-grid">
         <div 
-          v-for="card in businessCards" 
-          :key="card.name"
-          class="business-card"
+          v-for="card in processedBusinessCards" 
+          :key="card.id"
+          :class="[
+            'card-container', 
+            { 
+              'active': activeCardId === card.id,
+              'image-ad': card.adImage && hasAdContent(card) // 有廣告圖片且有廣告內容時使用圖片廣告
+            }
+          ]"
         >
-          <div 
-            class="card-background"
-            :style="{ 
-              backgroundImage: card.backgroundImage ? `url(${card.backgroundImage})` : 'none',
-              background: !card.backgroundImage ? card.background : 'none'
-            }"
-          ></div>
-          <!-- 調試用，顯示圖片路徑 -->
-          <div v-if="card.id === 1" style="position: absolute; top: 5px; left: 5px; font-size: 10px; background: rgba(0,0,0,0.5); color: white; padding: 2px;">
-            {{ card.backgroundImage }}
+          <div class="business-card"
+              @mouseenter="setActiveCard(card.id)"
+              @mouseleave="setActiveCard(null)">
+            <!-- 卡片主體內容 -->
+            <div class="card-content">
+              <div class="card-image" :style="getCardBackgroundStyle(card)">
+                <div class="card-avatar">
+                  <img :src="card.avatar" :alt="card.name" />
+                </div>
+              </div>
+              
+              <div class="card-info">
+                <h3 class="card-name">{{ card.name }}</h3>
+                <p class="card-location" v-if="card.location">{{ card.location }}</p>
+                <p class="card-title">{{ card.title }}</p>
+                
+                <!-- 社群按鈕 - 改為文字按鈕 -->
+                <div class="card-social">
+                  <!-- 對於有 links 屬性的名片 -->
+                  <template v-if="card.links">
+                    <button 
+                      v-for="(link, index) in card.links" 
+                      :key="index" 
+                      class="social-button text-button" 
+                      @click.stop="openLink(link.url)"
+                    >
+                      {{ getShortName(link.name) }}
+                    </button>
+                  </template>
+                  <!-- 對於有 portfolio, contact, support 屬性的名片 -->
+                  <template v-else>
+                    <button class="social-button text-button" @click.stop="openLink(card.portfolio)">
+                      作品
+                    </button>
+                    <button class="social-button text-button" @click.stop="openLink(card.contact)">
+                      聯絡
+                    </button>
+                    <button class="social-button text-button" @click.stop="openLink(card.support)">
+                      諮詢
+                    </button>
+                  </template>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 廣告區塊 - 只有當卡片有廣告內容時才顯示 -->
+            <div class="ad-section" v-if="hasAdContent(card)">
+              <!-- 沒有指定廣告圖片時使用文字廣告 -->
+              <template v-if="!card.adImage && hasAdContent(card)">
+                <div class="ad-block" @click.stop="openLink(card.adLinks?.[0]?.url || '#')">
+                  {{ card.adLinks?.[0]?.title || '查看作品集' }}
+                </div>
+                <div class="ad-block" @click.stop="openLink(card.adLinks?.[1]?.url || '#')">
+                  {{ card.adLinks?.[1]?.title || '聯絡合作' }}
+                </div>
+                <div class="ad-block" @click.stop="openLink(card.adLinks?.[2]?.url || '#')">
+                  {{ card.adLinks?.[2]?.title || '預約諮詢' }}
+                </div>
+              </template>
+              
+              <!-- 有指定廣告圖片時使用圖片廣告 -->
+              <template v-else>
+                <div class="ad-block ad-image-block" @click.stop="openLink(card.adLinks?.[0]?.url || '#')">
+                  <img :src="getAdImage(card)" :alt="card.adLinks?.[0]?.title" class="ad-image">
+                  <!-- 毛玻璃效果的文字覆蓋層 -->
+                  <div class="ad-text-overlay">
+                    <div class="ad-title">{{ card.adLinks?.[0]?.title }}</div>
+                  </div>
+                </div>
+              </template>
+            </div>
           </div>
-          <div class="card-content">
-            <div class="card-avatar">
-              <img :src="card.avatar" :alt="card.name" />
-            </div>
-            <div class="card-info">
-              <h3 class="card-name">{{ card.name }}</h3>
-              <p class="card-location">{{ card.location }}</p>
-              <p class="card-title">{{ card.title }}</p>
-            </div>
-            <div class="card-actions">
-              <button 
-                v-if="card.portfolio" 
-                @click="openLink(card.portfolio)"
-                class="card-btn card-btn-primary"
-              >
-                作品集
-              </button>
-              <button 
-                v-if="card.contact" 
-                @click="openLink(card.contact)"
-                class="card-btn card-btn-secondary"
-              >
-                聯絡
-              </button>
-              <button 
-                v-if="card.support" 
-                @click="openLink(card.support)"
-                class="card-btn card-btn-accent"
-              >
-                贊助
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="links-grid grid grid-2">
-      <div class="links-category card">
-        <h3 class="card-title">冒險據點</h3>
-
-        <div class="links-list">
-          <a
-            v-for="link in socialLinks"
-            :key="link.name"
-            :href="link.url"
-            target="_blank"
-            class="link-item"
-          >
-            <div class="link-content">
-              <img 
-                v-if="link.image" 
-                :src="link.image" 
-                :alt="link.name"
-                class="link-image"
-              />
-              <div class="link-info">
-                <span class="link-name">{{ link.name }}</span>
-                <span class="link-description">{{ link.description }}</span>
-              </div>
-              <div class="link-external">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                  <polyline points="15,3 21,3 21,9"></polyline>
-                  <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="links-category card">
-        <h3 class="card-title">藝術工會</h3>
-
-        <div class="links-list">
-          <a
-            v-for="link in creativeLinks"
-            :key="link.name"
-            :href="link.url"
-            target="_blank"
-            class="link-item"
-          >
-            <div class="link-content">
-              <img 
-                v-if="link.image" 
-                :src="link.image" 
-                :alt="link.name"
-                class="link-image"
-              />
-              <div class="link-info">
-                <span class="link-name">{{ link.name }}</span>
-                <span class="link-description">{{ link.description }}</span>
-              </div>
-              <div class="link-external">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                  <polyline points="15,3 21,3 21,9"></polyline>
-                  <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="links-category card">
-        <h3 class="card-title">商會聯盟</h3>
-
-        <div class="links-list">
-          <a
-            v-for="link in businessLinks"
-            :key="link.name"
-            :href="link.url"
-            target="_blank"
-            class="link-item"
-          >
-            <div class="link-content">
-              <img 
-                v-if="link.image" 
-                :src="link.image" 
-                :alt="link.name"
-                class="link-image"
-              />
-              <div class="link-info">
-                <span class="link-name">{{ link.name }}</span>
-                <span class="link-description">{{ link.description }}</span>
-              </div>
-              <div class="link-external">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                  <polyline points="15,3 21,3 21,9"></polyline>
-                  <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <div class="links-category card">
-        <h3 class="card-title">盟友名錄</h3>
-
-        <div class="links-list">
-          <a
-            v-for="link in friendLinks"
-            :key="link.name"
-            :href="link.url"
-            target="_blank"
-            class="link-item"
-          >
-            <div class="link-content">
-              <img 
-                v-if="link.image" 
-                :src="link.image" 
-                :alt="link.name"
-                class="link-image"
-              />
-              <div class="link-info">
-                <span class="link-name">{{ link.name }}</span>
-                <span class="link-description">{{ link.description }}</span>
-              </div>
-              <div class="link-external">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                  <polyline points="15,3 21,3 21,9"></polyline>
-                  <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-              </div>
-            </div>
-          </a>
         </div>
       </div>
     </div>
@@ -204,136 +99,231 @@
 </template>
 
 <script>
+
 // 匯入圖片
-import logoImage from '../assets/LOGO-s.png'
 import bg01 from '../assets/fantasy-river-scene.jpg'
+import logo02 from '../assets/logo02.jpg'
+import logo03 from '../assets/logo03.jpg'
+import logo04 from '../assets/logo04.jpg'
+import logo05 from '../assets/avatar.webp'
+// 匯入廣告圖片
+import adImage1 from '../assets/ads01.jpg'
+import adImage2 from '../assets/ads02.jpg'
+import adImage6 from '../assets/ads06.jpg'
+
 
 export default {
   name: "Links",
   data() {
     return {
-      socialLinks: [
-        {
-          name: "Twitter",
-          url: "https://twitter.com/ravboss",
-          description: "冒險日誌和創作分享",
-          image: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/twitter.svg"
-        },
-        {
-          name: "Instagram",
-          url: "https://instagram.com/ravboss",
-          description: "創作過程和靈感記錄",
-          image: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/instagram.svg"
-        },
-        {
-          name: "Facebook",
-          url: "https://facebook.com/ravboss",
-          description: "冒險者集會所",
-          image: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/facebook.svg"
-        },
-      ],
-      creativeLinks: [
-        {
-          name: "Pixiv",
-          url: "https://pixiv.net/users/ravboss",
-          description: "插畫作品展示",
-          image: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/pixiv.svg"
-        },
-        {
-          name: "ArtStation",
-          url: "https://artstation.com/ravboss",
-          description: "專業作品集",
-          image: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/artstation.svg"
-        },
-        {
-          name: "DeviantArt",
-          url: "https://deviantart.com/ravboss",
-          description: "創作社群",
-          image: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/deviantart.svg"
-        },
-      ],
-      businessLinks: [
-        {
-          name: "LinkedIn",
-          url: "https://linkedin.com/in/ravboss",
-          description: "商業合作聯絡",
-          image: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/linkedin.svg"
-        },
-        {
-          name: "Behance",
-          url: "https://behance.net/ravboss",
-          description: "設計作品展示",
-          image: "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/behance.svg"
-        },
-      ],
-      friendLinks: [
-        {
-          name: "創作者聯盟",
-          url: "https://example.com/creators",
-          description: "創作者交流平台",
-          image: "https://via.placeholder.com/40x40/667eea/ffffff?text=CA"
-        },
-        {
-          name: "設計師社群",
-          url: "https://example.com/designers", 
-          description: "設計師資源分享",
-          image: "https://via.placeholder.com/40x40/f093fb/ffffff?text=DC"
-        },
-        {
-          name: "RavBoss 官網",
-          url: "https://ravboss.com",
-          description: "主要創作平台",
-          image: logoImage
-        },
-      ],
+      bg01,
+      // 廣告圖片
+      adImages: {
+        adImage1,
+        adImage2,
+        adImage6
+      },
+      activeCardId: null, // 追蹤當前活動的卡片ID
       businessCards: [
         {
           id: 1,
           avatar: "https://catboss1995.github.io/resume-portfolio/assets/profile-fEj_plNt.jpg",
-          backgroundImage: "../assets/fantasy-river-scene.jpg",
+          backgroundImage: bg01,
           name: "連璽臻",
-          location: "台北，士林", 
+          location: "迷因烏鴉", // 添加了 location 屬性
           title: "前端 / UIUX設計 / 插畫",
           company: "創意工作室",
           description: "專精於品牌視覺設計與使用者體驗",
-          portfolio: "https://lihi.cc/P1SXc",
-          contact: "mailto:catboss1995@aol.com",
-          support: "https://support.example.com"
+          links: [
+            { name: "電子履歷", url: "https://lihi.cc/P1SXc", icon: "" },
+            { name: "EMAIL", url: "mailto:catboss1995@aol.com", icon: "" },
+          ],
+          // adLinks: [
+          //   { title: "查看作品集", url: "https://lihi.cc/P1SXc" },
+          //   { title: "聯絡合作", url: "mailto:catboss1995@aol.com" },
+          //   { title: "預約諮詢", url: "https://calendly.com/example" }
+          // ]
         },
         {
           id: 2,
-          avatar: "https://assets.codepen.io/1807688/internal/avatars/users/default.png?fit=crop&format=auto&height=512&version=1617384712&width=512",  // 使用已匯入的 LOGO
+          avatar: "https://assets.codepen.io/1807688/internal/avatars/users/default.png?fit=crop&format=auto&height=512&version=1617384712&width=512",
           background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-          name: "創作夥伴",
-          location: "高雄，台灣",
-          title: "動畫師",
-          company: "動畫工作室",
-          description: "2D/3D 動畫製作與角色設計",
-          portfolio: "https://tutorial.jumpdesign.tw/",
-          contact: "mailto:catboss1995@aol.com",
-          support: "https://www.ntubimdbirc.tw/course/20250313I002"
+          name: "田甜甜老師",
+          location: "北商前端講師", // 添加了 location 屬性
+          title: "網頁前端課程招生中！點圖查看詳細資訊",
+          company: "北商",
+          description: "前端課程講師，專注於實務教學與專案開發",
+          adImage: "adImage1", // 指定使用哪個廣告圖片
+          links: [
+            { name: "教學資源網站", url: "https://tutorial.jumpdesign.tw/", icon: "" },
+            { name: "課程", url: "https://www.ntubimdbirc.tw/course/20250313I002", icon: "" }
+          ],
+          adLinks: [
+            { title: "前端課程熱烈招生中", url: "https://www.ntubimdbirc.tw/course/20250313I002" },
+          ]
         },
         {
           id: 3,
-          avatar: "https://via.placeholder.com/60x60/48bb78/ffffff?text=TC",
-          background: "linear-gradient(135deg, #48bb78 0%, #38d9a9 100%)",
-          name: "Tech Creator",
-          location: "台中，台灣",
-          title: "前端工程師",
-          company: "科技新創",
-          description: "Vue.js & React 開發專家",
+          avatar: logo02,
+          background: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
+          name: "雜貓窩萬事屋",
+          location: "北極魔法工作室", // 添加了 location 屬性
+          title: "項圈、石頭與魔法",
+          company: "魔法工坊",
+          description: "專精於手工藝品與魔法飾品製作",
+          adImage: "adImage2", // 指定使用哪個廣告圖片
           links: [
-            { name: "GitHub", url: "https://github.com/techcreator", icon: "" },
-            { name: "技術部落格", url: "https://techblog.example.com", icon: "" },
-            { name: "Twitter", url: "https://twitter.com/techcreator", icon: "" }
+            { name: "蝦皮", url: "https://shopee.tw/zimgela", icon: "" },
+            { name: "網頁", url: "https://techblog.example.com", icon: "" },
+            { name: "臉書", url: "https://facebook.com/techcreator", icon: "" }
+          ],
+          adLinks: [
+            { title: "雜貓窩萬事屋專頁", url: "https://www.facebook.com/cats06" },
           ]
-        }
+        },
+        {
+          id: 4,
+          avatar: logo03,
+          background: "linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%)",
+          name: "Sylvain Mark 同羽工作室",
+          location: "願寶石的祝福常伴美好的生活!", // 添加了 location 屬性
+          title: "#銀#輕珠寶 #首飾 #訂製 #彫金",
+          company: "魔法工坊",
+          description: "專精於手工藝品與魔法飾品製作",
+          links: [
+            { name: "Instagram", url: "https://www.instagram.com/sylvain.mark/", icon: "" },
+            { name: "Threads", url: "https://www.threads.com/@sylvain.mark", icon: "" },
+            { name: "Facebook", url: "https://www.facebook.com/SylvainMark", icon: "" },
+          ],
+          // 注意：這裡沒有 adLinks，所以不應該顯示廣告區塊
+        },
+        {
+          id: 5,
+          avatar: logo04,
+          background: "linear-gradient(135deg, #fddb92 0%, #d1fdff 100%)",
+          name: "諾葉🦊 ",
+          location: "亮亮光狐狸", // 添加了 location 屬性
+          title: "療癒系繪師/手作小物",
+          company: "",
+          description: "",
+          links: [
+            { name: "微光手作坊", url: "https://www.threads.com/@tiny.light.foxy", icon: "" },
+            { name: "網頁", url: "https://techblog.example.com", icon: "" },
+            { name: "臉書", url: "https://facebook.com/techcreator", icon: "" }
+          ],
+        },
+        {
+          id: 6,
+          avatar: logo05,
+          background: "linear-gradient(135deg, #209cff 0%, #68e0cf 100%)",
+          name: "神川紀也",
+          location: "Akiya Kamikawa", // 添加了 location 屬性
+          title: "精選神速高品質繪師",
+          company: "住在折原臨也褲襠裡的可愛小精靈",
+          description: "住在折原臨也褲襠裡的可愛小精靈",
+          adImage: "adImage6", // 指定使用哪個廣告圖片
+          links: [
+            { name: "網頁", url: "https://portaly.cc/AkiyaKamikawa", icon: "" },
+            { name: "網頁", url: "https://techblog.example.com", icon: "" },
+            { name: "臉書", url: "https://facebook.com/techcreator", icon: "" }
+          ],
+          adLinks: [
+            { title: "T恤預購中", url: "https://forms.gle/2GBaQncurfhQwGvW8" },
+          ]
+        },
+        {
+          id: 7,
+          avatar: "https://via.placeholder.com/100x100/E8E8E8/666666?text=頭貼",
+          background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+          name: "有選單樣板",
+          location: "附註1", // 添加了 location 屬性
+          title: "描述串",
+          company: "",
+          description: "",
+          links: [
+            { name: "電子履歷", url: "https://www.threads.com/@tin555", icon: "" },
+            { name: "EMAIL", url: "https://www.threads.com/@tin555", icon: "" },
+          ],
+          adLinks: [
+            { title: "查看作品集", url: "https://www.threads.com/@tin555" },
+            { title: "聯絡合作", url: "https://www.threads.com/@tin555" },
+            { title: "預約諮詢", url: "https://www.threads.com/@tin555" }
+          ]
+        },
       ]
     };
   },
+  computed: {
+    processedBusinessCards() {
+      return this.businessCards.map(card => ({
+        ...card,
+        backgroundImage: card.id === 1 ? this.bg01 : card.backgroundImage
+      }));
+    }
+  },
   methods: {
     openLink(url) {
-      window.open(url, '_blank');
+      if (url && url !== '#') {
+        window.open(url, '_blank');
+      }
+    },
+    getCardBackgroundStyle(card) {
+      if (card.backgroundImage) {
+        return {
+          backgroundImage: `url(${card.backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        };
+      } else if (card.background) {
+        return {
+          background: card.background
+        };
+      }
+      return {};
+    },
+    getAdImage(card) {
+      // 如果卡片指定了廣告圖片，則使用該圖片，否則使用默認的 adImage1
+      return this.adImages[card.adImage || 'adImage1'];
+    },
+    // 獲取社群名稱的簡短版本（最多10個字）
+    getShortName(name) {
+      // 社群媒體名稱對應的簡短名稱
+      const shortNames = {
+        'GitHub': 'Git',
+        '網頁': '網頁',
+        'Twitter': '推特',
+        '技術部落格': '網誌',
+        'Facebook': 'FB',
+        '臉書': 'FB',
+      };
+      
+      // 如果有預定義的簡短名稱，則使用它
+      if (shortNames[name]) {
+        return shortNames[name];
+      }
+      
+      // 否則截取前10個字符
+      return name.length > 10 ? name.substring(0, 10) : name;
+    },
+    getLinkIcon(linkName) {
+      // 根據鏈接名稱返回相應的SVG路徑
+      const icons = {
+        'GitHub': 'M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12',
+        'Twitter': 'M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z',
+        '技術部落格': 'M19.513 8.199l-4.702-4.702c-0.198-0.198-0.459-0.307-0.739-0.307h-9.069c-0.579 0-1.050 0.471-1.050 1.050v19.512c0 0.579 0.471 1.050 1.050 1.050h14.172c0.579 0 1.050-0.471 1.050-1.050v-14.452c0-0.28-0.109-0.541-0.312-0.745zM14.718 4.75l4.261 4.261h-4.261v-4.261zM19.125 22.702h-14.25v-19.404h8.293v5.409c0 0.579 0.471 1.050 1.050 1.050h4.907v12.945z',
+        'Facebook': 'M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'
+      };
+      
+      return icons[linkName] || null;
+    },
+    // 設置當前活動的卡片
+    setActiveCard(id) {
+      this.activeCardId = id;
+    },
+    // 檢查卡片是否有廣告內容
+    hasAdContent(card) {
+      return Array.isArray(card.adLinks) && card.adLinks.length > 0;
     }
   }
 };

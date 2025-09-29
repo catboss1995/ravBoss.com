@@ -80,28 +80,107 @@ export default {
         this.products = response.data
       } catch (error) {
         console.error('獲取商品失敗:', error)
-        // 使用模擬資料
+        // 使用豐富的模擬商品資料
         this.products = [
           {
             id: 1,
             name: '奇幻冒險畫冊',
             category: '魔法道具',
-            description: '記錄著精彩冒險故事的畫冊',
-            price: 800
+            description: '記錄著精彩冒險故事的畫冊，包含15張全彩插畫',
+            price: 800,
+            stock: 10,
+            rating: 4.8,
+            image: '/assets/ads01.jpg'
           },
           {
             id: 2,
             name: '角色徽章套組',
             category: '冒險裝備',
-            description: '精緻角色徽章收藏套組',
-            price: 150
+            description: '精緻角色徽章收藏套組，包含5個主要角色徽章',
+            price: 150,
+            stock: 25,
+            rating: 4.5,
+            image: '/assets/cl01.webp'
           },
           {
             id: 3,
             name: '魔法壁紙寶盒',
             category: '珍藏物品',
-            description: '高品質奇幻壁紙收藏包',
-            price: 300
+            description: '高品質奇幻壁紙收藏包，4K解析度數位下載',
+            price: 300,
+            stock: 99,
+            rating: 4.9,
+            image: '/assets/fantasy-river-scene.jpg'
+          },
+          {
+            id: 4,
+            name: '冒險者手札',
+            category: '魔法道具',
+            description: '紀錄冒險歷程的特製手札，附贈專屬羽毛筆',
+            price: 450,
+            stock: 8,
+            rating: 4.6,
+            image: '/assets/sceneB.webp'
+          },
+          {
+            id: 5,
+            name: '龍族戰士公仔',
+            category: '冒險裝備',
+            description: '限量版龍族戰士手作公仔，高約15公分',
+            price: 1200,
+            stock: 3,
+            rating: 5.0,
+            image: '/assets/character_ligh.webp'
+          },
+          {
+            id: 6,
+            name: '森林精靈貼紙包',
+            category: '珍藏物品',
+            description: '可愛森林精靈防水貼紙包，共20張不重複',
+            price: 80,
+            stock: 50,
+            rating: 4.3,
+            image: '/assets/c.webp'
+          },
+          {
+            id: 7,
+            name: '魔法陣滑鼠墊',
+            category: '冒險裝備',
+            description: '大尺寸魔法陣圖案滑鼠墊，防滑橡膠底部',
+            price: 280,
+            stock: 15,
+            rating: 4.7,
+            image: '/assets/sk01.webp'
+          },
+          {
+            id: 8,
+            name: '寶石收藏箱',
+            category: '珍藏物品',
+            description: '精美木製寶石收藏箱，內含7種仿製寶石',
+            price: 680,
+            stock: 6,
+            rating: 4.4,
+            image: '/assets/money01.webp'
+          },
+          {
+            id: 9,
+            name: '冒險地圖海報',
+            category: '魔法道具',
+            description: 'A2尺寸冒險世界地圖海報，厚磅紙張印製',
+            price: 200,
+            stock: 30,
+            rating: 4.2,
+            image: '/assets/all.webp'
+          },
+          {
+            id: 10,
+            name: '魔法師法杖筆',
+            category: '冒險裝備',
+            description: '造型精美的魔法師法杖原子筆，可正常書寫',
+            price: 120,
+            stock: 40,
+            rating: 4.1,
+            image: '/assets/hand.webp'
           }
         ]
       } finally {

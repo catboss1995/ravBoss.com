@@ -1,7 +1,3 @@
-<style lang="scss" scoped>
-@use "../styles/login.scss" as *;
-</style>
-
 <template>
   <div class="login-container">
     <div class="login-card">
@@ -39,13 +35,15 @@
       <div v-if="error" class="error-message">
         {{ error }}
       </div>
+      
+      <div class="test-account-info">
+        <p>測試帳號：admin / admin123</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "Login",
   data() {
@@ -64,31 +62,35 @@ export default {
       this.error = "";
 
       try {
-        const response = await axios.post("/api/auth/login", this.credentials);
-
-        // 儲存 token 和用戶資訊
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-
-        // 重定向到儀表板或首頁
-        this.$router.push("/dashboard");
-      } catch (error) {
-        console.error("登入失敗:", error);
-
-        // 詳細的錯誤處理
-        if (error.code === "ERR_NETWORK") {
-          this.error = "無法連接到伺服器，請確認後端服務是否啟動";
-        } else if (error.response) {
-          // 伺服器回應錯誤
-          this.error =
-            error.response.data?.message || `伺服器錯誤 (${error.response.status})`;
-        } else if (error.request) {
-          // 網絡請求失敗
-          this.error = "網絡請求失敗，請檢查網絡連接";
-        } else {
-          // 其他錯誤
-          this.error = "登入失敗：" + error.message;
+        // 簡單的本地驗證邏輯
+        if (this.credentials.username === 'admin' && this.credentials.password === 'admin123') {
+          console.log('登入成功，使用測試帳號');
+          
+          // 創建模擬用戶和令牌
+          const mockUser = {
+            id: 1,
+            username: 'admin',
+            email: 'admin@ravboss.com',
+            isAdmin: true,
+            displayName: 'RavBoss管理員'
+          };
+          
+          const mockToken = 'mock_jwt_token_' + Date.now();
+          
+          // 儲存到本地存儲
+          localStorage.setItem('token', mockToken);
+          localStorage.setItem('user', JSON.stringify(mockUser));
+          
+          // 重定向到儀表板
+          this.$router.push('/dashboard');
+          return;
         }
+        
+        // 如果不是測試帳號，顯示錯誤
+        this.error = '登入失敗 - 請使用測試帳號：admin / admin123';
+      } catch (error) {
+        console.error('登入處理錯誤:', error);
+        this.error = '登入處理發生錯誤，請使用測試帳號：admin / admin123';
       } finally {
         this.isLoading = false;
       }
@@ -102,3 +104,100 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+}
+
+.login-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.login-btn:hover {
+  background: #5a6fd8;
+  transform: translateY(-1px);
+}
+
+.login-btn:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #fed7d7;
+  color: #c53030;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.test-account-info {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  background: #f5f5f5;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+</style>

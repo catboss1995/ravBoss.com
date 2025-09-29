@@ -21,10 +21,10 @@
             <div class="english">Commission</div>
           </div>
         </router-link>
-        <router-link to="/store" class="nav-link button-container forge-btn">
+        <router-link to="/terms" class="nav-link button-container forge-btn">
           <div class="nav-text">
-            <div class="chinese">公會市集</div>
-            <div class="english">Goods</div>
+            <div class="chinese">委託契約</div>
+            <div class="english">Terms</div>
           </div>
         </router-link>
         <router-link to="/news" class="nav-link button-container forge-btn">
@@ -39,10 +39,10 @@
           <img  ref="logoTilt" src="./assets/LOGO-s.png" alt="旅程起點 Journey Start" style="transform-style: preserve-3d ; transform: translateZ(20px) !important;"/>
         </router-link>
 
-        <router-link to="/terms" class="nav-link button-container forge-btn">
+        <router-link to="/store" class="nav-link button-container forge-btn">
           <div class="nav-text">
-            <div class="chinese">委託契約</div>
-            <div class="english">Terms</div>
+            <div class="chinese">公會市集</div>
+            <div class="english">Goods</div>
           </div>
         </router-link>
         <router-link to="/about" class="nav-link button-container forge-btn">

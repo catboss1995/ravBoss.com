@@ -47,9 +47,9 @@
 
     <!-- 完整布告欄區域 -->
     <section class="bulletin" aria-labelledby="bulletin-title">
-      <div class="board-frame">
+      <div class="board-frame" :style="{ backgroundImage: `linear-gradient(rgba(74, 56, 44, 0.7), rgba(59, 45, 35, 0.8) 70%), url(${bulletinBgUrl})` }">
         <header class="board-header">
-          <h2 id="bulletin-title" class="board-title">布告欄 Announcements</h2>
+          <h2 id="bulletin-title" class="board-title">布告欄 Board</h2>
           <div class="board-controls">
             <div class="filter-group">
               <button 
@@ -77,14 +77,14 @@
                 @click="setViewMode('carousel')" 
                 aria-label="輪播模式"
               >
-                🎞
+                <p>卷軸</p>
               </button>
               <button 
                 :class="['mode-btn', { 'is-active': viewMode === 'grid' }]" 
                 @click="setViewMode('grid')" 
                 aria-label="網格模式"
               >
-                🔲
+                <p>總覽</p>
               </button>
             </div>
           </div>
@@ -153,8 +153,9 @@
 </template>
 
 <script>
-import ImageManager from '../../../config/images.js';
+// import ImageManager from '../../../config/images.js';
 import fantasyRiverScene from '../assets/fantasy-river-scene.jpg';
+import redWoodBackground from '../assets/woodBk02.png';
 
 export default {
   name: "Home",
@@ -251,6 +252,11 @@ export default {
     heroBannerUrl() {
       // 使用 assets 導入的圖片
       return fantasyRiverScene;
+    },
+    
+    // 布告欄背景圖片
+    bulletinBgUrl() {
+      return redWoodBackground;
     },
     
     // 篩選後的資料

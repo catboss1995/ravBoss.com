@@ -19,18 +19,30 @@ app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 連接 MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ravboss-adventure', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// 連接 MongoDB（允許失敗繼續運行）
+let mongoConnected = false;
 
-mongoose.connection.on('connected', () => {
-  console.log('已連接到 MongoDB');
-});
+const connectMongoDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ravboss-adventure', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    mongoConnected = true;
+    console.log('已連接到 MongoDB');
+  } catch (error) {
+    console.log('MongoDB 連接失敗，將使用模擬資料模式');
+    console.log('請檢查 .env 中的 MONGODB_URI 設定');
+    mongoConnected = false;
+  }
+};
+
+// 嘗試連接資料庫
+connectMongoDB();
 
 mongoose.connection.on('error', (err) => {
-  console.error('MongoDB 連接錯誤:', err);
+  console.log('MongoDB 連接中斷:', err.message);
+  mongoConnected = false;
 });
 
 // 路由

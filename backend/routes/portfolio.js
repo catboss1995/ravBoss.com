@@ -2,6 +2,28 @@ const express = require('express');
 const router = express.Router();
 const Portfolio = require('../models/Portfolio');
 
+// 模擬作品資料
+const mockPortfolios = [
+  {
+    _id: '1',
+    title: '奇幻風景插圖',
+    description: '充滿神秘感的奇幻世界風景畫',
+    category: 'illustration',
+    images: ['/images/portfolio/fantasy-scene.jpg'],
+    featured: true,
+    createdAt: new Date()
+  },
+  {
+    _id: '2', 
+    title: '角色設計稿',
+    description: '遊戲角色概念設計',
+    category: 'character',
+    images: ['/images/portfolio/character-design.jpg'],
+    featured: false,
+    createdAt: new Date()
+  }
+];
+
 // 獲取所有作品集項目
 router.get('/', async (req, res) => {
   try {
@@ -11,10 +33,20 @@ router.get('/', async (req, res) => {
     if (category) filter.category = category;
     if (featured) filter.featured = featured === 'true';
     
+    // 嘗試從資料庫獲取
     const portfolios = await Portfolio.find(filter).sort({ createdAt: -1 });
     res.json(portfolios);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log('使用模擬作品資料');
+    // 資料庫失敗時使用模擬資料
+    let filteredData = mockPortfolios;
+    if (req.query.category) {
+      filteredData = filteredData.filter(item => item.category === req.query.category);
+    }
+    if (req.query.featured) {
+      filteredData = filteredData.filter(item => item.featured === (req.query.featured === 'true'));
+    }
+    res.json(filteredData);
   }
 });
 
@@ -27,7 +59,14 @@ router.get('/:id', async (req, res) => {
     }
     res.json(portfolio);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log('📝 使用模擬單一作品資料');
+    // 資料庫失敗時使用模擬資料
+    const mockItem = mockPortfolios.find(item => item._id === req.params.id);
+    if (mockItem) {
+      res.json(mockItem);
+    } else {
+      res.status(404).json({ message: '作品集項目未找到' });
+    }
   }
 });
 

@@ -48,7 +48,9 @@
     <!-- 文章列表 -->
     <div v-else class="posts-section">
       <div v-if="filteredPosts.length === 0" class="no-posts">
-        <div class="no-posts-icon">📜</div>
+        <div class="no-posts-icon">
+          <GiScrollUnfurled />
+        </div>
         <h3>暫無冒險記錄</h3>
         <p>這個分類還沒有任何冒險故事，敬請期待！</p>
       </div>
@@ -135,8 +137,12 @@
 
 <script>
 import axios from 'axios'
+import { GiScrollUnfurled } from 'react-icons/gi'
 
 export default {
+  components: {
+    GiScrollUnfurled
+  },
   name: 'News',
   data() {
     return {
@@ -193,7 +199,75 @@ export default {
         this.posts = response.data.posts || response.data || []
       } catch (error) {
         console.error('載入文章失敗:', error)
-        this.posts = []
+        // 使用豐富的模擬新聞資料
+        this.posts = [
+          {
+            id: 1,
+            title: '新作品《森林中的萊菲》發布！',
+            content: '經過數週的精心創作，全新場景插畫作品《森林中的萊菲》正式與大家見面！\n\n這幅作品描繪了萊菲在神秘森林中與小動物們互動的溫馨場景。使用了大量的綠色調和暖光效果，營造出夢幻而寧靜的氛圍。\n\n創作過程中使用了Photoshop和Procreate兩種工具，從概念草圖到最終完稿歷時約3週時間。特別感謝所有在創作過程中給予建議和支持的朋友們！',
+            category: 'news',
+            createdAt: '2024-05-15T10:00:00Z',
+            author: 'RavBoss',
+            tags: ['新作品', '場景插畫', '萊菲'],
+            featured: true,
+            views: 1250
+          },
+          {
+            id: 2,
+            title: '2024年委託服務升級公告',
+            content: '親愛的冒險者們，感謝大家對我們委託服務的支持！\n\n從2024年6月1日開始，我們將推出全新的委託服務方案：\n\n• 快速委託：3-5個工作天完成\n• 標準委託：1-2週完成\n• 精品委託：2-4週完成\n\n每個方案都包含不同的服務內容和價格選項。同時我們也新增了修改次數說明和更詳細的報價系統。\n\n如有任何問題，歡迎隨時聯絡我們！',
+            category: 'news',
+            createdAt: '2024-05-10T14:30:00Z',
+            author: 'RavBoss',
+            tags: ['委託服務', '升級', '公告'],
+            featured: false,
+            views: 890
+          },
+          {
+            id: 3,
+            title: '角色設計攻略：如何創造獨特的奇幻角色',
+            content: '在奇幻世界中，角色設計是最重要的元素之一。今天來分享一些角色設計的心得和技巧：\n\n1. 確定角色的背景故事\n首先要為角色建立完整的背景故事，包括出身、性格、目標等。這些會直接影響角色的外觀設計。\n\n2. 選擇適合的配色方案\n不同的顏色會傳達不同的情感和性格特質。暖色調通常表現友善，冷色調則較神秘。\n\n3. 注意比例和姿態\n角色的身體比例和姿態會影響觀者對角色的第一印象。\n\n4. 添加獨特的細節\n一些小細節往往能讓角色更加memorable，比如特殊的配件、疤痕或標記。\n\n希望這些技巧對大家的創作有所幫助！',
+            category: 'guide',
+            createdAt: '2024-05-08T09:15:00Z',
+            author: 'RavBoss',
+            tags: ['角色設計', '攻略', '奇幻'],
+            featured: true,
+            views: 2100
+          },
+          {
+            id: 4,
+            title: '冒險者日記：城市一角的創作歷程',
+            content: '今天想和大家分享《城市一角》這幅作品的創作過程。\n\n最初的靈感來自某個深夜，我路過一個小巷子時看到的溫馨場景。兩個朋友在昏黃的路燈下聊天，那種安靜而溫暖的氛圍深深打動了我。\n\n回到家後我立刻開始sketching，想要捕捉那種感覺。經過了好幾次的構圖調整，最終決定以咖鹿和羊作為主角。\n\n配色上選擇了偏暖的色調，特別是燈光的部分使用了橙黃色，希望能營造出那種溫馨的夜晚氛圍。\n\n背景的城市建築也花了不少時間，每一扇窗戶、每一個細節都希望能為整個場景加分。\n\n最終完成時真的很有成就感，希望大家也能感受到這幅畫想傳達的溫暖！',
+            category: 'adventure',
+            createdAt: '2024-05-05T20:45:00Z',
+            author: 'RavBoss',
+            tags: ['創作歷程', '城市', '夜景'],
+            featured: false,
+            views: 756
+          },
+          {
+            id: 5,
+            title: '商店新品上架通知',
+            content: '好消息！我們的商店又有新商品上架啦！\n\n本次新增商品包括：\n• 龍族戰士限量公仔\n• 魔法陣滑鼠墊\n• 寶石收藏箱\n• 冒險地圖海報\n\n每件商品都是精心挑選和設計的，數量有限售完為止。特別是龍族戰士公仔，這次只有3隻，喜歡的朋友要趕快下單哦！\n\n另外，購買任意商品滿500元還可以獲得免費的森林精靈貼紙包一份！\n\n感謝大家的支持，我們會繼續努力帶來更多精美的商品！',
+            category: 'news',
+            createdAt: '2024-05-03T16:20:00Z',
+            author: 'RavBoss',
+            tags: ['商店', '新品', '限量'],
+            featured: false,
+            views: 634
+          },
+          {
+            id: 6,
+            title: '繪畫工具推薦：我的數位繪圖設備分享',
+            content: '很多朋友問我平時都用什麼工具繪圖，今天就來詳細分享一下我的設備和軟體選擇：\n\n硬體設備：\n• iPad Pro 12.9吋 + Apple Pencil 2代\n• Wacom Intuos Pro 繪圖板\n• 主要電腦：MacBook Pro 16吋\n\n軟體工具：\n• Photoshop（主要用於完稿和後製）\n• Procreate（iPad上的主力軟體）\n• Clip Studio Paint（漫畫和插畫）\n• Blender（3D建模輔助）\n\n每種工具都有其特色和適用場景。Procreate特別適合外出時創作，Photoshop則是完稿的不二選擇。\n\n重要的是，好的工具能幫助創作，但最重要的還是多練習和保持創作熱忱！\n\n如果大家有其他推薦的工具也歡迎留言分享！',
+            category: 'guide',
+            createdAt: '2024-04-30T11:30:00Z',
+            author: 'RavBoss',
+            tags: ['工具推薦', '數位繪圖', '設備'],
+            featured: true,
+            views: 1890
+          }
+        ]
       } finally {
         this.loading = false
       }

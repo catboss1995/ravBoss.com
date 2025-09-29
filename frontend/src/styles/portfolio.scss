@@ -353,3 +353,697 @@
   line-height: 1.3;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7); // 增加文字陰影
 }
+
+// ============================
+// 作品詳情 Modal 樣式
+// ============================
+
+.work-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  cursor: pointer;
+  padding: 1rem;
+}
+
+.work-modal-container {
+  background: white;
+  border-radius: 12px;
+  max-width: 95vw;
+  max-height: 90vh;
+  width: 1200px;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.work-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #ecf0f1;
+  background: #f8f9fa;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #7f8c8d;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+  }
+}
+
+.work-navigation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .nav-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: #ecf0f1;
+      color: #95a5a6;
+
+      &:hover {
+        transform: none;
+        background-color: #ecf0f1;
+      }
+    }
+  }
+
+  .work-counter {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0 0.5rem;
+    min-width: 60px;
+    text-align: center;
+  }
+}
+
+.work-modal-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+.work-modal-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 1.5rem;
+  
+  // 美化滾動條
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+    
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}
+
+.work-modal-right {
+  flex: 0 0 400px;
+  background: #f8f9fa;
+  padding: 1.5rem;
+  overflow-y: auto;
+  border-left: 1px solid #ecf0f1;
+  
+  // 美化滾動條
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+    
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}
+
+.work-image-section {
+  margin-bottom: 2rem;
+
+  .main-image {
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+    object-fit: contain;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+
+  .placeholder-image {
+    background-color: #ecf0f1;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #7f8c8d;
+
+    p {
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.work-info-section {
+  .work-title {
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: bold;
+    line-height: 1.2;
+  }
+
+  .work-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+
+    .work-category {
+      background-color: #474747;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+
+    .work-date {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+    }
+  }
+
+  h3 {
+    color: #2c3e50;
+    margin: 1.5rem 0 0.8rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  .work-description,
+  .work-process {
+    line-height: 1.6;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+
+  .work-specs {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+
+    li {
+      padding: 0.4rem 0;
+      color: #2c3e50;
+      border-bottom: 1px solid #ecf0f1;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      strong {
+        color: #34495e;
+      }
+    }
+  }
+
+  .work-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+}
+
+// 畫廊樣式
+.work-gallery {
+  h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}
+
+.gallery-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.gallery-wrapper {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.gallery-slider {
+  display: flex;
+  transition: transform 0.3s ease;
+  gap: 1rem;
+}
+
+.gallery-nav-btn {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  &:disabled {
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: not-allowed;
+  }
+}
+
+.gallery-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+
+  .indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &.active {
+      background-color: #3498db;
+    }
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+  }
+}
+
+.gallery-item {
+  flex: 0 0 200px;
+  height: 150px;
+
+  .gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .youtube-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .youtube-iframe {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+    }
+  }
+
+  .placeholder-image {
+    background-color: #ecf0f1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+  }
+}
+
+// ============================
+// 燈箱效果樣式
+// ============================
+
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  cursor: pointer;
+}
+
+.lightbox-container {
+  position: relative;
+  max-width: 90vw;
+  max-height: 95vh;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0; // 增加上下padding確保縮圖有空間
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 60vh; // 減少圖片高度，為縮圖留出更多空間
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 0 60px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.lightbox-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  &:disabled {
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: not-allowed;
+  }
+
+  &.lightbox-prev {
+    left: 10px;
+  }
+
+  &.lightbox-next {
+    right: 10px;
+  }
+}
+
+.lightbox-info {
+  margin-top: 1rem;
+  text-align: center;
+  color: white;
+
+  .lightbox-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .lightbox-counter {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.lightbox-thumbnails {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  max-width: 90vw;
+  overflow-x: auto;
+  padding: 0.5rem;
+  
+  // 隱藏滾動條
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  .lightbox-thumbnail {
+    width: 60px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &.active {
+      opacity: 1;
+      border: 2px solid #3498db;
+    }
+  }
+}
+
+// ============================
+// 響應式設計
+// ============================
+
+@media (max-width: 768px) {
+  .work-modal-container {
+    width: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .work-modal-content {
+    flex-direction: column;
+  }
+
+  .work-modal-right {
+    flex: none;
+    border-left: none;
+    border-top: 1px solid #ecf0f1;
+  }
+
+  .work-modal-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+
+    .work-navigation {
+      justify-content: center;
+    }
+  }
+
+  .work-navigation {
+    .nav-btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .work-counter {
+      font-size: 0.8rem;
+      min-width: 50px;
+    }
+  }
+
+  .gallery-item {
+    flex: 0 0 150px;
+    height: 120px;
+  }
+
+  .lightbox-container {
+    max-width: 95vw;
+    padding: 0 10px;
+  }
+
+  .lightbox-image {
+    margin: 0 50px;
+    max-height: 60vh;
+  }
+
+  .lightbox-nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .lightbox-close {
+    top: -30px;
+    font-size: 1.5rem;
+  }
+
+  .lightbox-thumbnails {
+    max-width: 95vw;
+
+    .lightbox-thumbnail {
+      width: 50px;
+      height: 35px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .work-modal-overlay {
+    padding: 0;
+  }
+
+  .work-modal-container {
+    border-radius: 0;
+    height: 100vh;
+  }
+
+  .work-modal-left,
+  .work-modal-right {
+    padding: 1rem;
+  }
+
+  .work-info-section .work-title {
+    font-size: 1.4rem;
+  }
+
+  .work-navigation {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .nav-btn {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .work-counter {
+      order: -1;
+      width: 100%;
+      text-align: center;
+      padding: 0.5rem;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+    }
+  }
+
+  .gallery-container {
+    flex-direction: column;
+
+    .gallery-nav-btn {
+      display: none;
+    }
+
+    .gallery-wrapper {
+      width: 100%;
+    }
+  }
+
+  .gallery-item {
+    flex: 0 0 calc(100% - 1rem);
+    height: 120px;
+  }
+
+  .lightbox-close {
+    top: -25px;
+    font-size: 1.2rem;
+  }
+
+  .lightbox-nav-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+
+    &.lightbox-prev {
+      left: 5px;
+    }
+
+    &.lightbox-next {
+      right: 5px;
+    }
+  }
+
+  .lightbox-image {
+    margin: 0 45px;
+    max-height: 50vh;
+  }
+
+  .lightbox-thumbnails {
+    display: none; // 在小螢幕上隱藏縮圖
+  }
+}

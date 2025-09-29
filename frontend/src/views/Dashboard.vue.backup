@@ -1,0 +1,1030 @@
+﻿<template>
+  <div class="dashboard">
+    <!-- 頁面標題 -->
+    <div class="dashboard-header">
+      <h1>管理儀表板</h1>
+      <div class="user-area">
+        <span>歡迎，{{ user?.displayName || user?.username }}</span>
+        <button @click="logout" class="btn btn-logout">登出</button>
+      </div>
+    </div>
+
+    <!-- 統計卡片 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>作品總數</h3>
+        <div class="stat-number">{{ portfolioCount }}</div>
+      </div>
+      <div class="stat-card">
+        <h3>新聞文章</h3>
+        <div class="stat-number">{{ newsCount }}</div>
+      </div>
+      <div class="stat-card">
+        <h3>商店商品</h3>
+        <div class="stat-number">{{ storeCount }}</div>
+      </div>
+      <div class="stat-card">
+        <h3>委託申請</h3>
+        <div class="stat-number">{{ commissionCount }}</div>
+      </div>
+    </div>
+
+    <!-- 功能選單 -->
+    <div class="management-tabs">
+      <button 
+        v-for="tab in tabs" 
+        :key="tab.id"
+        @click="activeTab = tab.id"
+        :class="['tab-btn', { active: activeTab === tab.id }]"
+      >
+        {{ tab.name }}
+      </button>
+    </div>
+
+    <!-- 內容管理區域 -->
+    <div class="content-area">
+      <!-- 作品集管理 -->
+      <div v-if="activeTab === 'portfolio'" class="tab-content">
+        <div class="section-header">
+          <h2>作品集管理</h2>
+          <button @click="showAddPortfolioModal = true" class="btn btn-primary">+ 新增作品</button>
+        </div>
+        
+        <div class="data-table">
+          <div class="table-header">
+            <div>標題</div>
+            <div>分類</div>
+            <div>建立日期</div>
+            <div>操作</div>
+          </div>
+          <div v-for="item in portfolioList" :key="item.id" class="table-row">
+            <div>{{ item.title }}</div>
+            <div>{{ item.category }}</div>
+            <div>{{ formatDate(item.createdAt) }}</div>
+            <div class="actions">
+              <button @click="editPortfolio(item)" class="btn-sm btn-edit">編輯</button>
+              <button @click="deletePortfolio(item.id)" class="btn-sm btn-delete">刪除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 新聞管理 -->
+      <div v-if="activeTab === 'news'" class="tab-content">
+        <div class="section-header">
+          <h2>新聞管理</h2>
+          <button @click="showAddNewsModal = true" class="btn btn-primary">+ 發布新聞</button>
+        </div>
+        
+        <div class="data-table">
+          <div class="table-header">
+            <div>標題</div>
+            <div>分類</div>
+            <div>觀看次數</div>
+            <div>發布日期</div>
+            <div>操作</div>
+          </div>
+          <div v-for="item in newsList" :key="item.id" class="table-row">
+            <div>{{ item.title }}</div>
+            <div>{{ getCategoryName(item.category) }}</div>
+            <div>{{ item.views || 0 }} 次</div>
+            <div>{{ formatDate(item.createdAt) }}</div>
+            <div class="actions">
+              <button @click="editNews(item)" class="btn-sm btn-edit">編輯</button>
+              <button @click="deleteNews(item.id)" class="btn-sm btn-delete">刪除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 商店管理 -->
+      <div v-if="activeTab === 'store'" class="tab-content">
+        <div class="section-header">
+          <h2>商店管理</h2>
+          <button @click="showAddProductModal = true" class="btn btn-primary">+ 新增商品</button>
+        </div>
+        
+        <div class="data-table">
+          <div class="table-header">
+            <div>商品名稱</div>
+            <div>分類</div>
+            <div>價格</div>
+            <div>庫存</div>
+            <div>操作</div>
+          </div>
+          <div v-for="item in storeList" :key="item.id" class="table-row">
+            <div>{{ item.name }}</div>
+            <div>{{ item.category }}</div>
+            <div>NT$ {{ item.price }}</div>
+            <div>{{ item.stock || 0 }}</div>
+            <div class="actions">
+              <button @click="editProduct(item)" class="btn-sm btn-edit">編輯</button>
+              <button @click="deleteProduct(item.id)" class="btn-sm btn-delete">刪除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 委託管理 -->
+      <div v-if="activeTab === 'commission'" class="tab-content">
+        <div class="section-header">
+          <h2>委託管理</h2>
+        </div>
+        
+        <div class="data-table">
+          <div class="table-header">
+            <div>客戶姓名</div>
+            <div>委託類型</div>
+            <div>預算</div>
+            <div>狀態</div>
+            <div>提交日期</div>
+            <div>操作</div>
+          </div>
+          <div v-for="item in commissionList" :key="item.id" class="table-row">
+            <div>{{ item.name }}</div>
+            <div>{{ item.type }}</div>
+            <div>{{ item.budget }}</div>
+            <div>
+              <select v-model="item.status" @change="updateCommissionStatus(item)">
+                <option value="pending">待處理</option>
+                <option value="in-progress">進行中</option>
+                <option value="completed">已完成</option>
+                <option value="cancelled">已取消</option>
+              </select>
+            </div>
+            <div>{{ formatDate(item.createdAt) }}</div>
+            <div class="actions">
+              <button @click="viewCommissionDetail(item)" class="btn-sm btn-view">查看</button>
+              <button @click="deleteCommission(item.id)" class="btn-sm btn-delete">刪除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 新增作品 Modal -->
+    <div v-if="showAddPortfolioModal" class="modal-overlay" @click="closeModals">
+      <div class="modal-content" @click.stop>
+        <h3>新增作品</h3>
+        <form @submit.prevent="addPortfolio">
+          <div class="form-group">
+            <label>標題</label>
+            <input v-model="newPortfolio.title" type="text" required>
+          </div>
+          <div class="form-group">
+            <label>分類</label>
+            <select v-model="newPortfolio.category">
+              <option>場景插畫</option>
+              <option>人物插畫</option>
+              <option>手繪</option>
+              <option>隨筆/塗鴉/梗圖</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>描述</label>
+            <textarea v-model="newPortfolio.description" rows="3"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="button" @click="closeModals" class="btn btn-secondary">取消</button>
+            <button type="submit" class="btn btn-primary">新增</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 新增新聞 Modal -->
+    <div v-if="showAddNewsModal" class="modal-overlay" @click="closeModals">
+      <div class="modal-content" @click.stop>
+        <h3>發布新聞</h3>
+        <form @submit.prevent="addNews">
+          <div class="form-group">
+            <label>標題</label>
+            <input v-model="newNews.title" type="text" required>
+          </div>
+          <div class="form-group">
+            <label>分類</label>
+            <select v-model="newNews.category">
+              <option value="news">最新消息</option>
+              <option value="adventure">冒險故事</option>
+              <option value="guide">攻略指南</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>內容</label>
+            <textarea v-model="newNews.content" rows="6" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>標籤 (用逗號分隔)</label>
+            <input v-model="newNews.tags" type="text" placeholder="例如：新作品,插畫,奇幻">
+          </div>
+          <div class="form-actions">
+            <button type="button" @click="closeModals" class="btn btn-secondary">取消</button>
+            <button type="submit" class="btn btn-primary">發布</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 新增商品 Modal -->
+    <div v-if="showAddProductModal" class="modal-overlay" @click="closeModals">
+      <div class="modal-content" @click.stop>
+        <h3>新增商品</h3>
+        <form @submit.prevent="addProduct">
+          <div class="form-group">
+            <label>商品名稱</label>
+            <input v-model="newProduct.name" type="text" required>
+          </div>
+          <div class="form-group">
+            <label>分類</label>
+            <select v-model="newProduct.category">
+              <option>魔法道具</option>
+              <option>冒險裝備</option>
+              <option>珍藏物品</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>價格</label>
+            <input v-model="newProduct.price" type="number" required>
+          </div>
+          <div class="form-group">
+            <label>庫存</label>
+            <input v-model="newProduct.stock" type="number" required>
+          </div>
+          <div class="form-group">
+            <label>描述</label>
+            <textarea v-model="newProduct.description" rows="3"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="button" @click="closeModals" class="btn btn-secondary">取消</button>
+            <button type="submit" class="btn btn-primary">新增</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Dashboard',
+  data() {
+    return {
+      user: null,
+      activeTab: 'portfolio',
+      
+      // 資料列表
+      portfolioList: [],
+      newsList: [],
+      storeList: [],
+      commissionList: [],
+      
+      // 統計數字
+      portfolioCount: 0,
+      newsCount: 0, 
+      storeCount: 0,
+      commissionCount: 0,
+      
+      // Modal 控制
+      showAddPortfolioModal: false,
+      showAddNewsModal: false,
+      showAddProductModal: false,
+      
+      // 新增表單資料
+      newPortfolio: {
+        title: '',
+        category: '場景插畫',
+        description: ''
+      },
+      newNews: {
+        title: '',
+        category: 'news',
+        content: '',
+        tags: ''
+      },
+      newProduct: {
+        name: '',
+        category: '魔法道具',
+        price: 0,
+        stock: 1,
+        description: ''
+      },
+      
+      // 選單
+      tabs: [
+        { id: 'portfolio', name: '作品管理' },
+        { id: 'news', name: '新聞管理' },
+        { id: 'store', name: '商店管理' },
+        { id: 'commission', name: '委託管理' }
+      ]
+    }
+  },
+  created() {
+    this.loadUser()
+    this.loadAllData()
+  },
+  methods: {
+    loadUser() {
+      const user = localStorage.getItem('user')
+      if (user) {
+        this.user = JSON.parse(user)
+      } else {
+        this.$router.push('/login')
+      }
+    },
+    
+    loadAllData() {
+      // 載入作品集
+      this.portfolioList = JSON.parse(localStorage.getItem('portfolioData') || '[]')
+      if (this.portfolioList.length === 0) {
+        this.portfolioList = this.getDefaultPortfolio()
+        this.savePortfolioData()
+      }
+      
+      // 載入新聞
+      this.newsList = JSON.parse(localStorage.getItem('newsData') || '[]')
+      if (this.newsList.length === 0) {
+        this.newsList = this.getDefaultNews()
+        this.saveNewsData()
+      }
+      
+      // 載入商店
+      this.storeList = JSON.parse(localStorage.getItem('storeData') || '[]')
+      if (this.storeList.length === 0) {
+        this.storeList = this.getDefaultStore()
+        this.saveStoreData()
+      }
+      
+      // 載入委託
+      this.commissionList = JSON.parse(localStorage.getItem('commissionData') || '[]')
+      if (this.commissionList.length === 0) {
+        this.commissionList = this.getDefaultCommission()
+        this.saveCommissionData()
+      }
+      
+      this.updateStats()
+    },
+    
+    updateStats() {
+      this.portfolioCount = this.portfolioList.length
+      this.newsCount = this.newsList.length
+      this.storeCount = this.storeList.length
+      this.commissionCount = this.commissionList.length
+    },
+    
+    // 預設資料
+    getDefaultPortfolio() {
+      return [
+        { id: 1, title: '森林中的萊菲', category: '場景插畫', description: '享受森林時光', createdAt: '2024-03-15T10:00:00Z' },
+        { id: 2, title: '寶藏菲爾', category: '人物插畫', description: '大盜與寶藏', createdAt: '2024-02-20T10:00:00Z' },
+        { id: 3, title: '弓箭手小麥', category: '手繪', description: '龍族戰士設計', createdAt: '2024-01-10T10:00:00Z' }
+      ]
+    },
+    
+    getDefaultNews() {
+      return [
+        { 
+          id: 1, 
+          title: '新作品《森林中的萊菲》發布！', 
+          category: 'news', 
+          content: '經過數週的精心創作，全新場景插畫作品《森林中的萊菲》正式與大家見面！',
+          createdAt: '2024-05-15T10:00:00Z',
+          views: 1250,
+          tags: ['新作品', '場景插畫']
+        },
+        { 
+          id: 2, 
+          title: '2024年委託服務升級公告', 
+          category: 'news', 
+          content: '親愛的冒險者們，感謝大家對我們委託服務的支持！',
+          createdAt: '2024-05-10T14:30:00Z',
+          views: 890,
+          tags: ['委託服務', '升級']
+        }
+      ]
+    },
+    
+    getDefaultStore() {
+      return [
+        { id: 1, name: '奇幻冒險畫冊', category: '魔法道具', price: 800, stock: 10, description: '記錄冒險故事的畫冊' },
+        { id: 2, name: '角色徽章套組', category: '冒險裝備', price: 150, stock: 25, description: '精緻角色徽章收藏' }
+      ]
+    },
+    
+    getDefaultCommission() {
+      return [
+        { 
+          id: 1, 
+          name: '小明', 
+          type: '人物插畫', 
+          budget: 'NT$ 3000-5000', 
+          status: 'pending',
+          email: 'ming@example.com',
+          description: '希望畫一個騎士角色',
+          createdAt: '2024-05-01T10:00:00Z'
+        },
+        { 
+          id: 2, 
+          name: '小華', 
+          type: '場景插畫', 
+          budget: 'NT$ 5000-8000', 
+          status: 'in-progress',
+          email: 'hua@example.com',
+          description: '需要一個城堡的背景圖',
+          createdAt: '2024-04-28T15:30:00Z'
+        }
+      ]
+    },
+    
+    // 作品管理
+    addPortfolio() {
+      if (!this.newPortfolio.title.trim()) return
+      
+      const newItem = {
+        id: Date.now(),
+        title: this.newPortfolio.title,
+        category: this.newPortfolio.category,
+        description: this.newPortfolio.description,
+        image: '/assets/sketch.webp',
+        createdAt: new Date().toISOString()
+      }
+      
+      this.portfolioList.unshift(newItem)
+      this.savePortfolioData()
+      this.updateStats()
+      this.closeModals()
+      this.resetPortfolioForm()
+      alert('作品已新增成功！')
+    },
+    
+    editPortfolio(item) {
+      const newTitle = prompt('編輯標題:', item.title)
+      if (newTitle && newTitle.trim()) {
+        item.title = newTitle.trim()
+        this.savePortfolioData()
+        alert('作品已更新！')
+      }
+    },
+    
+    deletePortfolio(id) {
+      if (confirm('確定要刪除這個作品嗎？')) {
+        this.portfolioList = this.portfolioList.filter(item => item.id !== id)
+        this.savePortfolioData()
+        this.updateStats()
+        alert('作品已刪除！')
+      }
+    },
+    
+    // 新聞管理
+    addNews() {
+      if (!this.newNews.title.trim() || !this.newNews.content.trim()) return
+      
+      const newItem = {
+        id: Date.now(),
+        title: this.newNews.title,
+        category: this.newNews.category,
+        content: this.newNews.content,
+        tags: this.newNews.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+        createdAt: new Date().toISOString(),
+        views: 0,
+        featured: false
+      }
+      
+      this.newsList.unshift(newItem)
+      this.saveNewsData()
+      this.updateStats()
+      this.closeModals()
+      this.resetNewsForm()
+      alert('新聞已發布成功！')
+    },
+    
+    editNews(item) {
+      const newTitle = prompt('編輯標題:', item.title)
+      if (newTitle && newTitle.trim()) {
+        item.title = newTitle.trim()
+        this.saveNewsData()
+        alert('新聞已更新！')
+      }
+    },
+    
+    deleteNews(id) {
+      if (confirm('確定要刪除這篇新聞嗎？')) {
+        this.newsList = this.newsList.filter(item => item.id !== id)
+        this.saveNewsData()
+        this.updateStats()
+        alert('新聞已刪除！')
+      }
+    },
+    
+    // 商品管理
+    addProduct() {
+      if (!this.newProduct.name.trim() || this.newProduct.price <= 0) return
+      
+      const newItem = {
+        id: Date.now(),
+        name: this.newProduct.name,
+        category: this.newProduct.category,
+        price: parseInt(this.newProduct.price),
+        stock: parseInt(this.newProduct.stock),
+        description: this.newProduct.description,
+        rating: 4.0
+      }
+      
+      this.storeList.unshift(newItem)
+      this.saveStoreData()
+      this.updateStats()
+      this.closeModals()
+      this.resetProductForm()
+      alert('商品已新增成功！')
+    },
+    
+    editProduct(item) {
+      const newName = prompt('編輯商品名稱:', item.name)
+      if (newName && newName.trim()) {
+        item.name = newName.trim()
+        this.saveStoreData()
+        alert('商品已更新！')
+      }
+    },
+    
+    deleteProduct(id) {
+      if (confirm('確定要刪除這個商品嗎？')) {
+        this.storeList = this.storeList.filter(item => item.id !== id)
+        this.saveStoreData()
+        this.updateStats()
+        alert('商品已刪除！')
+      }
+    },
+    
+    // 委託管理
+    updateCommissionStatus(item) {
+      this.saveCommissionData()
+      alert(`委託狀態已更新為: ${this.getStatusName(item.status)}`)
+    },
+    
+    viewCommissionDetail(item) {
+      alert(`委託詳情：\n\n客戶：${item.name}\n信箱：${item.email}\n類型：${item.type}\n預算：${item.budget}\n\n描述：${item.description}`)
+    },
+    
+    deleteCommission(id) {
+      if (confirm('確定要刪除這個委託申請嗎？')) {
+        this.commissionList = this.commissionList.filter(item => item.id !== id)
+        this.saveCommissionData()
+        this.updateStats()
+        alert('委託申請已刪除！')
+      }
+    },
+    
+    // 資料儲存
+    savePortfolioData() {
+      localStorage.setItem('portfolioData', JSON.stringify(this.portfolioList))
+    },
+    
+    saveNewsData() {
+      localStorage.setItem('newsData', JSON.stringify(this.newsList))
+    },
+    
+    saveStoreData() {
+      localStorage.setItem('storeData', JSON.stringify(this.storeList))
+    },
+    
+    saveCommissionData() {
+      localStorage.setItem('commissionData', JSON.stringify(this.commissionList))
+    },
+    
+    // Modal 控制
+    closeModals() {
+      this.showAddPortfolioModal = false
+      this.showAddNewsModal = false
+      this.showAddProductModal = false
+    },
+    
+    resetPortfolioForm() {
+      this.newPortfolio = { title: '', category: '場景插畫', description: '' }
+    },
+    
+    resetNewsForm() {
+      this.newNews = { title: '', category: 'news', content: '', tags: '' }
+    },
+    
+    resetProductForm() {
+      this.newProduct = { name: '', category: '魔法道具', price: 0, stock: 1, description: '' }
+    },
+    
+    // 輔助方法
+    getCategoryName(category) {
+      const categories = {
+        adventure: '冒險故事',
+        news: '最新消息',
+        guide: '攻略指南'
+      }
+      return categories[category] || category
+    },
+    
+    getStatusName(status) {
+      const statuses = {
+        pending: '待處理',
+        'in-progress': '進行中',
+        completed: '已完成',
+        cancelled: '已取消'
+      }
+      return statuses[status] || status
+    },
+    
+    formatDate(dateStr) {
+      if (!dateStr) return '-'
+      const date = new Date(dateStr)
+      return date.toLocaleDateString('zh-TW')
+    },
+    
+    logout() {
+      localStorage.clear()
+      this.$router.push('/login')
+    }
+  }
+}
+</script>
+
+<style scoped>
+.dashboard {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 頁面標題 */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 統計卡片 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border-left: 4px solid #667eea;
+}
+
+.stat-card h3 {
+  margin: 0 0 0.5rem 0;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 功能選單 */
+.management-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.tab-btn:hover {
+  background: #f8f9fa;
+  transform: translateY(-1px);
+}
+
+.tab-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+/* 內容區域 */
+.content-area {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.tab-content {
+  padding: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f5f5f5;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+/* 資料表格 */
+.data-table {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #555;
+}
+
+.table-header div {
+  padding: 1rem;
+  border-right: 1px solid #ddd;
+}
+
+.table-header div:last-child {
+  border-right: none;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background: #f8f9fa;
+}
+
+.table-row div {
+  padding: 1rem;
+  border-right: 1px solid #eee;
+  display: flex;
+  align-items: center;
+}
+
+.table-row div:last-child {
+  border-right: none;
+}
+
+/* 委託管理特殊樣式 */
+.tab-content[v-if="activeTab === 'commission'"] .table-header {
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.tab-content[v-if="activeTab === 'commission'"] .table-row {
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+/* 操作按鈕 */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 按鈕樣式 */
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5a6fd8;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #545b62;
+}
+
+.btn-logout {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-logout:hover {
+  background: #c82333;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-edit {
+  background: #28a745;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #218838;
+}
+
+.btn-view {
+  background: #17a2b8;
+  color: white;
+}
+
+.btn-view:hover {
+  background: #138496;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #c82333;
+}
+
+/* Modal 樣式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin: 0 0 1.5rem 0;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+/* 表單樣式 */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .management-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .table-header div,
+  .table-row div {
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .actions {
+    justify-content: center;
+  }
+  
+  .modal-content {
+    width: 95%;
+    padding: 1.5rem;
+  }
+}
+
+/* 狀態選擇器樣式 */
+select {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  background: white;
+}
+
+select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+</style>

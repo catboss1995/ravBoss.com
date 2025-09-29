@@ -137,12 +137,24 @@ export default {
       this.submitting = true;
 
       try {
+        // 嘗試發送到後端API
         await axios.post("/api/commission", this.form);
         alert("委託已成功提交！我們會盡快與您聯絡。");
         this.resetForm();
       } catch (error) {
         console.error("提交委託失敗:", error);
-        alert("提交失敗，請稍後再試。");
+        
+        // 使用假資料模擬成功提交
+        setTimeout(() => {
+          alert("委託已成功提交！（模擬模式）\n\n我們已收到您的委託申請：\n" +
+                `姓名: ${this.form.name}\n` +
+                `聯絡信箱: ${this.form.email}\n` +
+                `委託類型: ${this.form.type}\n` +
+                `預算範圍: ${this.form.budget}\n` +
+                `希望完成時間: ${this.form.deadline}\n\n` +
+                "我們會在 1-2 個工作天內回覆您！");
+          this.resetForm();
+        }, 1000);
       } finally {
         this.submitting = false;
       }

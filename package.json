@@ -13,6 +13,7 @@
     "axios": "^1.12.2",
     "masonry-layout": "^4.2.2",
     "pinia": "^2.1.6",
+    "react-icons": "^5.5.0",
     "tilt.js": "^1.2.1",
     "vanilla-tilt": "^1.8.1",
     "vue": "^3.3.4",
