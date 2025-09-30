@@ -43,6 +43,7 @@
           :key="announcement.id"
           :id="`announcement-${announcement.id}`"
           class="announcement-item card"
+          @click="openAnnouncementModal(announcement)"
           :class="{ 'important-announcement': announcement.important }"
           :style="{ '--rand': getRandomRotation() }"
         >
@@ -82,12 +83,33 @@
           <p>告示板上暫時沒有符合條件的公告</p>
         </div>
       </div>
+
+      <!-- 燈窗：顯示完整公告內容 -->
+      <div v-if="showAnnouncementModal" class="announcement-modal-overlay" @click="closeAnnouncementModal">
+        <div class="announcement-modal-container" @click.stop>
+          <button @click="closeAnnouncementModal" class="modal-close">×</button>
+          <img v-if="selectedAnnouncement.image" :src="selectedAnnouncement.image" alt="公告圖片" class="announcement-modal-image" />
+          <img v-else-if="pixabayImage" :src="pixabayImage" alt="Pixabay 公告圖片" class="announcement-modal-image" />
+          <a v-else href="https://pixabay.com/" target="_blank">
+            <img src="https://pixabay.com/static/img/logo_square.png" alt="Pixabay 公告圖片" class="announcement-modal-image" />
+          </a>
+          <h1>{{ selectedAnnouncement.title }}</h1>
+          <div class="date-badge-container">
+            <span class="announcement-date">{{ formatTimeAgo(selectedAnnouncement.postedAt) }}</span>
+          </div>
+          <p>{{ selectedAnnouncement.content }}</p>
+          <div class="announcement-tags">
+            <span v-for="tag in selectedAnnouncement.tags" :key="tag" class="tag">{{ tag }}</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import announcementService from "../services/announcementService";
+import axios from 'axios';
 
 export default {
   name: "Board",
@@ -108,6 +130,9 @@ export default {
       // 當前狀態
       activeFilter: "all",
       searchKeyword: "",
+      showAnnouncementModal: false,
+      selectedAnnouncement: null,
+      pixabayImage: null,
     };
   },
   
@@ -190,7 +215,41 @@ export default {
     // 搜尋關鍵字
     handleSearch() {
       // 搜尋邏輯在 computed 中實現
-    }
+    },
+    
+    // 打開燈窗顯示公告詳情
+    openAnnouncementModal(announcement) {
+      this.selectedAnnouncement = announcement;
+      this.showAnnouncementModal = true;
+      if (!announcement.image) {
+        this.fetchPixabayImage(announcement.title);
+      }
+    },
+    // 關閉燈窗
+    closeAnnouncementModal() {
+      this.showAnnouncementModal = false;
+      this.selectedAnnouncement = null;
+    },
+    async fetchPixabayImage(query) {
+      try {
+        const response = await axios.get('https://pixabay.com/api/', {
+          params: {
+            key: '6832565-f7ec8a79a9340bb0268cb833b',
+            q: query,
+            image_type: 'photo',
+            per_page: 1,
+          },
+        });
+        if (response.data.hits.length > 0) {
+          this.pixabayImage = response.data.hits[0].webformatURL;
+        } else {
+          this.pixabayImage = 'https://pixabay.com/static/img/logo_square.png';
+        }
+      } catch (error) {
+        console.error('Pixabay API 請求失敗:', error);
+        this.pixabayImage = 'https://pixabay.com/static/img/logo_square.png';
+      }
+    },
   },
 };
 </script>
