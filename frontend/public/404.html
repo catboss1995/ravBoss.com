@@ -1,4 +1,3 @@
-<!-- 404.html -->
 <!DOCTYPE html>
 <html>
 
@@ -6,18 +5,15 @@
     <meta charset="utf-8">
     <title>重定向中...</title>
     <script>
-        // 保存當前頁面路徑到 sessionStorage
-        sessionStorage.redirect = location.href;
-
-        // 獲取當前路徑
-        const path = location.pathname + location.search + location.hash;
-
-        // 重定向到首頁並附帶原始路徑作為查詢參數
-        window.location.replace('/?p=' + encodeURIComponent(path));
+        // 保存當前路徑
+        sessionStorage.redirect = location.pathname + location.search + location.hash;
+        // 重定向到首頁
+        location.replace('/');
     </script>
 </head>
 
 <body>
     <p>重定向中，請稍候...</p>
+</body>
 
 </html>
