@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重定向到 ravBoss.com</title>
+    <script>
+        // 檢查是否在本地環境
+        if (window.location.protocol === 'file:') {
+            // 在本地文件系統中，嘗試打開本地文件
+            window.location.href = 'file:///D:/ravBoss.com/ravBoss.com/index.html';
+        } else {
+            // 在網頁伺服器環境中，重定向到相對路徑或絕對URL
+            // 注意：這裡需要替換為實際的線上URL
+            window.location.href = '/index.html';
+        }
+    </script>
+</head>
+<body>
+    <p>正在重定向到 ravBoss.com，請稍候...</p>
+    <p>如果沒有自動重定向，請<a href="file:///D:/ravBoss.com/ravBoss.com/index.html">點擊這裡</a>（僅在本地環境有效）</p>
+</body>
+</html>
