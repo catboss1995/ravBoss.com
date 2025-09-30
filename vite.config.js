@@ -4,10 +4,8 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  // 根據您的 GitHub Pages 儲存庫名稱調整基礎路徑
-  // 如果您的儲存庫是 username.github.io，則設為 '/'
-  // 如果您的儲存庫是 username.github.io/ravBoss.com，則設為 '/ravBoss.com/'
-  base: '/',  
+  // 修改基礎路徑以匹配 GitHub Pages 的部署路徑
+  base: '/ravBoss.com/',  
   server: {
     port: 5173,
     proxy: {
