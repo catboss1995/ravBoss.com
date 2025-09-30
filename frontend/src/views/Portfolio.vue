@@ -410,12 +410,12 @@ export default {
           },
           {
             id: 6,
-            title: "我與師傅",
+            title: "師徒",
             category: "人物插畫", 
             description: "離別也是另一種開始",
             image: characterImg,
             gallery: [characterImg, cWebpImg],
-            tags: ["師傅", "離別", "情感"],
+            tags: ["師傅", "離別", "傷感"],
             createdAt: "2024-02-14",
             software: ["Procreate"],
             dimensions: "2048x2048"
@@ -709,6 +709,58 @@ export default {
         },
         '5': {
           id: '5',
+          title: '痞痞潮潮ㄉ羊跟鹿',
+          category: '場景插畫',
+          description: '城市夜生活',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
+          image: kaluImg,
+          gallery: [
+            { type: 'youtube', url: 'https://youtu.be/Ggeu1xIXGsk', title: '創作過程影片' },
+          ]
+        },
+        '6': {
+          id: '6',
+          title: '師徒',
+          category: '人物插畫',
+          description: '離別也是另一種開始',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '原創',
+          image: characterImg,
+          gallery: []
+        },
+        '7': {
+          id: '7',
+          title: '出發冒險新世界',
+          category: '場景插畫',
+          description: '2024獸與地下城主題投稿',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
+          image: sceneBImg,
+          gallery: []
+        },
+        '8': {
+          id: '8',
+          title: '痞痞潮潮ㄉ羊跟鹿',
+          category: '場景插畫',
+          description: '城市夜生活',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
+          image: iyaya.webp,
+          gallery: [
+            { type: 'youtube', url: 'https://youtu.be/ZZ5LpwO-An4', title: '梗的影片' },
+          ]
+        },
+        '9': {
+          id: '9',
           title: '痞痞潮潮ㄉ羊跟鹿',
           category: '場景插畫',
           description: '城市夜生活',
