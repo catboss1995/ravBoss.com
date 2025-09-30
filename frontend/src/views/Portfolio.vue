@@ -716,7 +716,7 @@ export default {
           dimensions: '1920x1080',
           software: 'Clip Studio Paint',
           process: '贈圖',
-          image: sketchImg,
+          image: kaluImg,
           gallery: [
             { type: 'youtube', url: 'https://youtu.be/Ggeu1xIXGsk', title: '創作過程影片' },
           ]
