@@ -263,12 +263,12 @@ export default {
         this.works = [
           { id: '1', title: '森林中的萊菲', category: '場景插畫' },
           { id: '2', title: '寶藏菲爾', category: '人物插畫' },
-          { id: '3', title: '龍族戰士', category: '手繪' },
-          { id: '4', title: '日常塗鴉', category: '隨筆/塗鴉/梗圖' },
-          { id: '5', title: '天空之城', category: '場景插畫' },
-          { id: '6', title: '暗黑騎士', category: '人物插畫' },
+          { id: '3', title: '弓箭手小麥', category: '手繪' },
+          { id: '4', title: '龐克兔兔', category: '隨筆/塗鴉/梗圖' },
+          { id: '5', title: '城市一角', category: '場景插畫' },
+          { id: '6', title: 'hiyaya梗圖', category: '人物插畫' },
           { id: '7', title: '角色草圖', category: '手繪' },
-          { id: '8', title: '搞笑梗圖', category: '隨筆/塗鴉/梗圖' }
+          { id: '8', title: 'hiyaya梗圖', category: '隨筆/塗鴉/梗圖' }
         ]
       }
       
@@ -362,16 +362,42 @@ export default {
           },
           '3': {
             id: this.id,
-            title: '龍族戰士',
+            title: '弓箭手小麥',
             category: '手繪',
-            description: '充滿力量感的龍族戰士設計。',
+            description: '充滿力量感的弓箭手。',
             date: '2024-01-10',
-            image: 'https://cdn.jsdelivr.net/gh/catboss1995/ravBoss.com@main/images/portfolio/work_3_large.jpg',
+            image: 'handImg' || '/handImg.webp',
             dimensions: '1920x1080',
             software: '手繪 + Photoshop',
             duration: '約 7 天',
             process: '從手繪草稿開始，再進行數位後製。',
-            gallery: []
+            gallery: [
+              {
+                type: 'youtube',
+                url: 'https://youtu.be/3CYFQPE8iBA',
+                title: '創作過程影片'
+              },
+              {
+                type: 'image',
+                url: sk02 || '/sk02.webp',
+                title: '草稿階段'
+              },
+              {
+                type: 'image',
+                url: cl02 || '/cl02.webp',
+                title: '上色階段'
+              },
+              {
+                type: 'image',
+                url: dlc02a || '/dlc02-1.webp',
+                title: '服裝設定'
+              },
+              {
+                type: 'image',
+                url: dlc02b || '/dlc02-2.webp',
+                title: '服裝設定'
+              }
+            ]
           }
         };
         
