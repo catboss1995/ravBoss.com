@@ -1,57 +1,376 @@
-// Commission.vue (鐵匠鋪) 頁面樣式
-.commission-content {
-  display: grid;
-  align-items: start;
+@use "../styles/variables" as *;
 
-  gap: 2rem;
-  grid-template-columns: 1fr 1fr;
+// 基礎頁面樣式
+.commission-container {
+  max-width: 1200px;
+  padding: 2rem;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
-.commission-info,
-.commission-form-container {
-  h2 {
-    margin-bottom: 1.5rem;
-    color: #2c3e50;
-  }
+.form-container {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.process-steps {
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 25px;
+  border-bottom: 3px solid #444444;
+}
+
+.header h1 {
+  color: #444444;
+  margin: 0;
+  font-size: 2.5em;
+  font-weight: 700;
+}
+
+.header h1 i {
+  color: #444444;
+  margin-right: 15px;
+}
+
+.header p {
+  color: #666;
+  margin: 10px 0 0 0;
+  font-size: 1.2em;
+}
+
+.section {
+  margin-bottom: 35px;
+  padding: 25px;
+  border-left: 4px solid #444444;
+  background: #f8f9ff;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.section h2 {
+  color: #444444;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.5em;
   display: flex;
-  flex-direction: column;
-
-  gap: 1rem;
+  align-items: center;
+  font-weight: 600;
 }
 
-.step {
-  padding: 1rem;
-  background-color: #f8f9fa;
-  border-left: 4px solid #3498db;
-  border-radius: 8px;
+.section h2 i {
+  color: #444444;
+  margin-right: 12px;
+  width: 24px;
+  font-size: 1.1em;
+}
 
-  h3 {
-    margin-bottom: .5rem;
-    color: #2c3e50;
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
+}
 
-  p {
-    color: #7f8c8d;
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 1.05em;
+}
+
+.required {
+  color: #444444;
+  margin-left: 4px;
+}
+
+input[type="text"], 
+input[type="email"], 
+input[type="tel"], 
+input[type="date"], 
+input[type="number"], 
+select, 
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #444444;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.checkbox-group, .radio-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
 }
 
-.commission-form {
-  padding: 1.5rem;
-  background-color: #f8f9fa;
+.checkbox-item, .radio-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  background: white;
   border-radius: 8px;
+  border: 1px solid #eee;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #f0f2ff;
+    border-color: #444444;
+  }
 }
 
-.form-textarea {
-  min-height: 120px;
-  resize: vertical;
+.checkbox-item input, .radio-item input {
+  margin-right: 10px;
+  width: auto;
+}
+
+.price-info {
+  background: #e8f4fd;
+  padding: 18px;
+  border-radius: 10px;
+  margin: 20px 0;
+  border-left: 4px solid #444444;
+}
+
+.price-info h4 {
+  margin: 0 0 12px 0;
+  color: #444444;
+  display: flex;
+  align-items: center;
+  font-size: 1.1em;
+}
+
+.price-info h4 i {
+  color: #444444;
+  margin-right: 10px;
+}
+
+.workflow-info {
+  background: #ffe595;
+  padding: 18px;
+  border-radius: 10px;
+  margin: 20px 0;
+  border-left: 4px solid #444444;
+}
+
+.workflow-info h4 {
+  margin: 0 0 12px 0;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  font-size: 1.1em;
+}
+
+.workflow-info h4 i {
+  color: #444444;
+  margin-right: 10px;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #ffaf02 0%, #ff9810 100%);
+  color: black;
+  padding: 16px 45px;
+  border: none;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  margin: 40px auto 0;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(102, 126, 234, 0.5);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.submit-btn i {
+  margin-right: 10px;
+}
+
+.terms {
+  background: #ffe595;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 25px 0;
+  border-left: 4px solid #ffe595;
+}
+
+.terms h3 {
+  color: #252525;
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+  font-size: 1.3em;
+}
+
+.terms h3 i {
+  color: #ffe595;
+  margin-right: 10px;
+}
+
+.terms .checkbox-item {
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.copyright-section {
+  background: #ffe595;
+  padding: 25px;
+  border-radius: 10px;
+  margin: 25px 0;
+  border-left: 4px solid #fdcb6e;
+}
+
+.copyright-section h3 {
+  color: #252525;
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+  font-size: 1.3em;
+}
+
+.copyright-section h3 i {
+  color: #252525;
+  margin-right: 10px;
+}
+
+.copyright-section h4 {
+  color: #252525;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.copyright-section h4 i {
+  color: #252525;
+  margin-right: 10px;
+  width: 16px;
+}
+
+.copyright-section ul {
+  padding-left: 20px;
+  
+  li {
+    margin-bottom: 10px;
+    color: #252525;
+    line-height: 1.5;
+  }
+}
+
+.file-upload {
+  border: 2px dashed #ffe595;
+  padding: 25px;
+  text-align: center;
+  border-radius: 10px;
+  background: #f8f9ff;
+  cursor: pointer;
+  transition: all 0.3s;
+  
+  &:hover {
+    background: #eef1ff;
+    border-color: #f1a603;
+  }
+}
+
+.file-upload i {
+  color: #ffbe09;
+  font-size: 2.5em;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.file-upload input[type="file"] {
+  cursor: pointer;
+}
+
+.timeline-section {
+  background: #ffe595;
+  padding: 18px;
+  border-radius: 10px;
+  margin: 20px 0;
+  border-left: 4px solid #ff9c08;
+}
+
+.timeline-section h4 {
+  margin: 0 0 12px 0;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  font-size: 1.1em;
+}
+
+.timeline-section h4 i {
+  color: #ff960c;
+  margin-right: 10px;
+}
+
+.icon-text {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  color: #666;
+}
+
+.icon-text i {
+  color: #888;
+  margin-right: 8px;
+  width: 16px;
 }
 
 // 響應式設計
 @media (max-width: 768px) {
-  .commission-content {
-    grid-template-columns: 1fr;
+  .form-container {
+    padding: 25px;
+  }
+  
+  .section {
+    padding: 20px;
+  }
+  
+  .header h1 {
+    font-size: 2em;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
   }
 }

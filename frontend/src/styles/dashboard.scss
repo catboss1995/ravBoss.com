@@ -1,0 +1,226 @@
+@use "../styles/variables" as *;
+
+.dashboard-container {
+  @include page-container;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+  
+  h1 {
+    @include heading-style;
+    font-size: 2.5rem;
+    text-align: center;
+  }
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  
+  .stat-card {
+    @include card-style;
+    padding: 1.5rem;
+    text-align: center;
+    
+    .stat-title {
+      color: $gray-600;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-value {
+      color: $gray-800;
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-change {
+      font-size: 0.9rem;
+      
+      &.positive {
+        color: $gray-600;
+      }
+      
+      &.negative {
+        color: $gray-500;
+      }
+    }
+  }
+}
+
+.dashboard-sections {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+  
+  .section {
+    @include card-style;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    
+    h2 {
+      color: $primary-text;
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid $border-color;
+    }
+    
+    .action-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1rem;
+      
+      .btn {
+        @include button-style;
+      }
+    }
+  }
+}
+
+.recent-activities {
+  .activity-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid $border-color;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: $gray-200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      color: $gray-700;
+    }
+    
+    .activity-content {
+      flex-grow: 1;
+      
+      .activity-title {
+        font-weight: bold;
+        color: $primary-text;
+        margin-bottom: 0.25rem;
+      }
+      
+      .activity-time {
+        font-size: 0.8rem;
+        color: $gray-500;
+      }
+    }
+  }
+}
+
+.upcoming-tasks {
+  .task-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid $border-color;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .task-checkbox {
+      margin-right: 1rem;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid $gray-400;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      
+      &:checked {
+        background-color: $gray-600;
+        border-color: $gray-600;
+        
+        &::after {
+          content: '✓';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: white;
+          font-size: 12px;
+        }
+      }
+    }
+    
+    .task-content {
+      flex-grow: 1;
+      
+      .task-title {
+        color: $primary-text;
+        margin-bottom: 0.25rem;
+      }
+      
+      .task-due {
+        font-size: 0.8rem;
+        color: $gray-500;
+      }
+    }
+    
+    .task-priority {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+      
+      &.high {
+        background-color: $gray-300;
+        color: $gray-800;
+      }
+      
+      &.medium {
+        background-color: $gray-200;
+        color: $gray-700;
+      }
+      
+      &.low {
+        background-color: $gray-100;
+        color: $gray-600;
+      }
+    }
+  }
+}
+
+.quick-actions {
+  .action-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    
+    .btn {
+      @include button-style;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+      
+      .icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+}

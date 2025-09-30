@@ -1,39 +1,60 @@
 // News.vue (冒險日誌) 頁面樣式
 .news-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #f5f7fa 0%, #646464 100%);
 }
 
 .hero-section {
   padding: 4rem 2rem;
   color: white;
   text-align: center;
-  background: linear-gradient(135deg, #acacacff 0%, #3b383dff 100%);
+  background: linear-gradient(135deg, #acacacff 0%, #646464 100%);
   border-radius: 8px;
+  margin-bottom: 2rem;
+  background-image: url('https://images.pexels.com/photos/1762851/pexels-photo-1762851.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    border-radius: 8px;
+  }
 }
 
 .hero-title {
   margin-bottom: 1rem;
-  font-size: 2rem;
+  font-size: 2.5rem;
   text-shadow: 2px 2px 4px rgba(0,0,0,.3);
+  position: relative;
+  z-index: 1;
 }
 
 .hero-subtitle {
   font-size: 1.2rem;
   opacity: .9;
+  position: relative;
+  z-index: 1;
 }
 
 .filter-section {
   padding: 2rem;
   background: white;
   box-shadow: 0 2px 10px rgba(0,0,0,.1);
+  margin-bottom: 2rem;
+  border-radius: 8px;
 }
 
 .filter-tabs {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-
   gap: 1rem;
 }
 
@@ -86,6 +107,15 @@
   margin: 0 auto;
 }
 
+// 部落格風格標題
+.blog-section-title {
+  font-size: 1.8rem;
+  margin: 2rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #474747;
+  color: #2c3e50;
+}
+
 .no-posts {
   padding: 4rem 2rem;
   color: #7f8c8d;
@@ -100,9 +130,49 @@
 .posts-grid {
   display: grid;
   margin-bottom: 3rem;
-
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+// 精選文章區塊
+.featured-post {
+  position: relative;
+  margin-bottom: 3rem;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  grid-column: 1 / -1;
+  height: 400px;
+}
+
+.featured-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featured-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+  color: white;
+}
+
+.featured-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+  color: white;
+}
+
+.featured-excerpt {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  color: white;
 }
 
 .post-card {
@@ -112,11 +182,21 @@
   border-radius: 16px;
   transition: all .3s;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     box-shadow: 0 8px 30px rgba(0,0,0,.12);
     transform: translateY(-5px);
   }
+}
+
+.post-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
 }
 
 .post-header {
@@ -136,16 +216,19 @@
 .category-adventure {
   color: #707070ff;
   background: #e8f5e8;
+  border: 2px solid #363636;
 }
 
 .category-news {
   color: #474747;
   background: #e3f2fd;
+  border: 2px solid #363636;
 }
 
 .category-guide {
   color: #414141ff;
   background: #fff3e0;
+  border: 2px solid #363636;
 }
 
 .post-date {
@@ -164,6 +247,7 @@
   margin-bottom: 1.5rem;
   color: #34495e;
   line-height: 1.6;
+  flex-grow: 1;
 }
 
 .post-footer {
@@ -171,6 +255,22 @@
   justify-content: space-between;
   align-items: center;
   font-size: .9rem;
+  margin-top: auto;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.author-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
 }
 
 .post-author {
@@ -182,12 +282,27 @@
   font-weight: 500;
 }
 
+// 標籤樣式
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.tag {
+  padding: 0.3rem 0.8rem;
+  background: #f1f1f1;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #474747;
+}
+
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 3rem;
-
   gap: 1rem;
 }
 
@@ -213,7 +328,6 @@
 
 .pagination-numbers {
   display: flex;
-
   gap: .5rem;
 }
 
@@ -263,6 +377,12 @@
   border-radius: 16px;
 }
 
+.modal-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
 .close-btn {
   position: absolute;
   top: 1rem;
@@ -278,6 +398,7 @@
   border-radius: 50%;
   transition: all .3s;
   cursor: pointer;
+  z-index: 10;
 
   &:hover {
     background: #bdc3c7;
@@ -295,6 +416,7 @@
   padding: 1rem 2rem;
   margin: 0;
   color: #2c3e50;
+  font-size: 1.8rem;
 }
 
 .modal-content {
@@ -302,12 +424,64 @@
   color: #34495e;
   font-size: 1.1rem;
   line-height: 1.8;
+  
+  p {
+    margin-bottom: 1.5rem;
+  }
+  
+  strong {
+    color: #2c3e50;
+  }
+  
+  li {
+    margin-bottom: 0.5rem;
+    margin-left: 1.5rem;
+  }
 }
 
 .modal-footer {
   padding: 1rem 2rem 2rem;
   color: #7f8c8d;
   border-top: 1px solid #ecf0f1;
+}
+
+// 相關文章區塊
+.related-posts {
+  margin-top: 2rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #ecf0f1;
+}
+
+.related-title {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.related-list {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.related-item {
+  min-width: 200px;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  
+  &:hover {
+    background: #f1f1f1;
+  }
+}
+
+.related-item-title {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
 }
 
 // 響應式設計
@@ -318,6 +492,14 @@
 
   .posts-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .featured-post {
+    height: 300px;
+  }
+  
+  .featured-title {
+    font-size: 1.5rem;
   }
 
   .pagination {
@@ -330,5 +512,13 @@
 
   .modal-content {
     padding: 0 1rem 1rem;
+  }
+  
+  .related-list {
+    flex-direction: column;
+  }
+  
+  .related-item {
+    min-width: auto;
   }
 }

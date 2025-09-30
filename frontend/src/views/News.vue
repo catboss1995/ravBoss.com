@@ -47,6 +47,27 @@
 
     <!-- 文章列表 -->
     <div v-else class="posts-section">
+      <!-- 精選文章 -->
+      <div v-if="featuredPost && selectedCategory === ''" class="featured-post" @click="openPost(featuredPost)">
+        <img :src="featuredPost.image" alt="精選文章封面" class="featured-image">
+        <div class="featured-content">
+          <span class="post-category" :class="`category-${featuredPost.category}`">
+            {{ getCategoryName(featuredPost.category) }}
+          </span>
+          <h2 class="featured-title">{{ featuredPost.title }}</h2>
+          <p class="featured-excerpt">{{ getExcerpt(featuredPost.content) }}</p>
+          <div class="post-meta">
+            <img :src="featuredPost.authorAvatar" alt="作者頭像" class="author-avatar">
+            <span>{{ featuredPost.author || '冒險者' }}</span>
+            <span style="margin: 0 10px;">•</span>
+            <time>{{ formatDate(featuredPost.createdAt) }}</time>
+          </div>
+        </div>
+      </div>
+
+      <h2 v-if="selectedCategory === ''" class="blog-section-title">最新文章</h2>
+      <h2 v-else class="blog-section-title">{{ getCategoryName(selectedCategory) }}</h2>
+
       <div v-if="filteredPosts.length === 0" class="no-posts">
         <div class="no-posts-icon">
           <GiScrollUnfurled />
@@ -62,6 +83,8 @@
           class="post-card"
           @click="openPost(post)"
         >
+          <img :src="post.image" alt="文章封面" class="post-image">
+          
           <div class="post-header">
             <span class="post-category" :class="`category-${post.category}`">
               {{ getCategoryName(post.category) }}
@@ -73,8 +96,17 @@
           
           <p class="post-excerpt">{{ getExcerpt(post.content) }}</p>
           
+          <div class="tag-list" v-if="post.tags && post.tags.length">
+            <span v-for="(tag, index) in post.tags.slice(0, 2)" :key="index" class="tag">
+              #{{ tag }}
+            </span>
+          </div>
+          
           <div class="post-footer">
-            <span class="post-author">{{ post.author || '冒險者' }}</span>
+            <div class="post-meta">
+              <img :src="post.authorAvatar" alt="作者頭像" class="author-avatar">
+              <span>{{ post.author || '冒險者' }}</span>
+            </div>
             <span class="read-more">閱讀更多 →</span>
           </div>
         </article>
@@ -116,6 +148,8 @@
       <div class="post-modal-content">
         <button @click="selectedPost = null" class="close-btn">×</button>
         
+        <img :src="selectedPost.image" alt="文章封面" class="modal-image">
+        
         <div class="modal-header">
           <span class="post-category" :class="`category-${selectedPost.category}`">
             {{ getCategoryName(selectedPost.category) }}
@@ -125,10 +159,38 @@
         
         <h1 class="modal-title">{{ selectedPost.title }}</h1>
         
+        <div class="post-meta" style="padding: 0 2rem;">
+          <img :src="selectedPost.authorAvatar" alt="作者頭像" class="author-avatar">
+          <span>{{ selectedPost.author || '冒險者' }}</span>
+          <span style="margin: 0 10px;">•</span>
+          <span>瀏覽 {{ selectedPost.views || 0 }}</span>
+        </div>
+        
+        <div class="tag-list" style="padding: 0 2rem;" v-if="selectedPost.tags && selectedPost.tags.length">
+          <span v-for="(tag, index) in selectedPost.tags" :key="index" class="tag">
+            #{{ tag }}
+          </span>
+        </div>
+        
         <div class="modal-content" v-html="formatContent(selectedPost.content)"></div>
         
         <div class="modal-footer">
           <span class="post-author">作者：{{ selectedPost.author || '冒險者' }}</span>
+        </div>
+        
+        <div class="related-posts" v-if="relatedPosts.length">
+          <h3 class="related-title">相關文章</h3>
+          <div class="related-list">
+            <div 
+              v-for="post in relatedPosts" 
+              :key="post.id"
+              class="related-item"
+              @click.stop="openPost(post)"
+            >
+              <h4 class="related-item-title">{{ post.title }}</h4>
+              <time class="post-date">{{ formatDate(post.createdAt) }}</time>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -157,9 +219,13 @@ export default {
   computed: {
     filteredPosts() {
       if (!this.selectedCategory) {
-        return this.posts
+        return this.posts.filter(post => post.id !== (this.featuredPost?.id || -1))
       }
       return this.posts.filter(post => post.category === this.selectedCategory)
+    },
+    
+    featuredPost() {
+      return this.posts.find(post => post.featured)
     },
     
     totalPages() {
@@ -181,6 +247,19 @@ export default {
         pages.push(i)
       }
       return pages
+    },
+    
+    relatedPosts() {
+      if (!this.selectedPost) return []
+      
+      return this.posts
+        .filter(post => 
+          post.id !== this.selectedPost.id && 
+          (post.category === this.selectedPost.category || 
+           (post.tags && this.selectedPost.tags && 
+            post.tags.some(tag => this.selectedPost.tags.includes(tag))))
+        )
+        .slice(0, 3)
     }
   },
   watch: {
@@ -196,11 +275,12 @@ export default {
       this.loading = true
       try {
         const response = await axios.get('/api/posts')
-        this.posts = response.data.posts || response.data || []
+        let posts = response.data.posts || response.data || []
+        this.posts = this.enhancePostsWithImages(posts)
       } catch (error) {
         console.error('載入文章失敗:', error)
         // 使用豐富的模擬新聞資料
-        this.posts = [
+        const mockPosts = [
           {
             id: 1,
             title: '新作品《森林中的萊菲》發布！',
@@ -268,9 +348,34 @@ export default {
             views: 1890
           }
         ]
+        this.posts = this.enhancePostsWithImages(mockPosts)
       } finally {
         this.loading = false
       }
+    },
+    
+    enhancePostsWithImages(posts) {
+      const images = [
+        'https://images.pexels.com/photos/1762851/pexels-photo-1762851.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+        'https://images.pexels.com/photos/3573351/pexels-photo-3573351.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+        'https://images.pexels.com/photos/3680219/pexels-photo-3680219.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+        'https://images.pexels.com/photos/924824/pexels-photo-924824.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+        'https://images.pexels.com/photos/1261731/pexels-photo-1261731.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+        'https://images.pexels.com/photos/3617500/pexels-photo-3617500.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+      ]
+      
+      const avatars = [
+        'https://images.pexels.com/photos/1629212/pexels-photo-1629212.jpeg?auto=compress&cs=tinysrgb&w=100',
+        'https://images.pexels.com/photos/1520760/pexels-photo-1520760.jpeg?auto=compress&cs=tinysrgb&w=100',
+        'https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&w=100'
+      ]
+      
+      return posts.map((post, index) => ({
+        ...post,
+        image: images[index % images.length],
+        authorAvatar: avatars[index % avatars.length],
+        content: this.enhanceContent(post.content)
+      }))
     },
     
     getCategoryName(category) {
@@ -297,13 +402,36 @@ export default {
     },
     
     formatContent(content) {
-      // 簡單的換行處理
-      return content.replace(/\n/g, '<br>')
+      // 更豐富的內容格式化
+      let formatted = content
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+      
+      // 包裝在段落標籤中
+      formatted = `<p>${formatted}</p>`
+      
+      // 修正可能的重複段落標籤
+      return formatted.replace(/<\/p><p><\/p><p>/g, '</p><p>')
+    },
+    
+    enhanceContent(content) {
+      // 在內容中添加一些格式標記，使其更豐富
+      return content
+        .replace(/^(.*?)：/gm, '<strong>$1：</strong>')
+        .replace(/^(\d+\. .*?)$/gm, '<strong>$1</strong>')
+        .replace(/•(.*?)$/gm, '<li>$1</li>')
     },
     
     openPost(post) {
       this.selectedPost = post
       document.body.style.overflow = 'hidden'
+      
+      // 增加瀏覽次數
+      if (this.selectedPost.views) {
+        this.selectedPost.views += 1
+      } else {
+        this.selectedPost.views = 1
+      }
     }
   },
   beforeUnmount() {

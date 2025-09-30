@@ -19,28 +19,23 @@
       </div>
     </section>
 
-    <div class="features grid grid-3">
+    <!-- 修復中間三個卡片區域 -->
+    <div class="features">
       <div class="card">
         <h3 class="card-title">公會市集</h3>
-
         <p>探索各種珍稀物品和裝備，尋找你需要的冒險道具。</p>
-
         <router-link to="/store" class="btn">進入市集</router-link>
       </div>
 
       <div class="card">
         <h3 class="card-title">冒險日誌</h3>
-
         <p>記錄著每一次冒險的精彩瞬間和創作軌跡。</p>
-
         <router-link to="/news" class="btn">翻閱日誌</router-link>
       </div>
 
       <div class="card">
         <h3 class="card-title">冒險者</h3>
-
         <p>認識更多志同道合的冒險夥伴，一起踏上旅程。</p>
-
         <router-link to="/links" class="btn">尋找夥伴</router-link>
       </div>
     </div>
@@ -147,86 +142,27 @@
             </article>
           </li>
         </div>
+        
+        <!-- 查看更多按鈕 -->
+        <div class="view-more-container">
+          <router-link to="/board" class="view-more-btn">查看更多公告</router-link>
+        </div>
       </div>
     </section>
   </div>
 </template>
 
 <script>
-// import ImageManager from '../../../config/images.js';
 import fantasyRiverScene from '../assets/fantasy-river-scene.jpg';
 import redWoodBackground from '../assets/woodBk02.png';
+import announcementService from '../services/announcementService';
 
 export default {
   name: "Home",
   data() {
     return {
       // 布告欄完整資料
-      flyers: [
-        {
-          id: "f1",
-          title: "新作品發布：龍族守護者",
-          category: "作品",
-          description: "最新完成的龍族系列插畫作品已上線，歡迎到作品集欣賞完整的創作過程和設計理念。",
-          tags: ["New", "作品"],
-          reward: "精彩內容",
-          postedAt: Date.now() - 2 * 60 * 60 * 1000 // 2小時前
-        },
-        {
-          id: "f2",
-          title: "委託服務優惠月",
-          category: "活動",
-          description: "九月委託服務享有特別優惠，包含角色設計、場景繪製等項目，歡迎洽詢。",
-          tags: ["Event", "限時"],
-          reward: "優惠價格",
-          postedAt: Date.now() - 1 * 24 * 60 * 60 * 1000 // 1天前
-        },
-        {
-          id: "f3",
-          title: "招募：插畫合作夥伴",
-          category: "招募",
-          description: "誠徵志同道合的插畫師共同合作專案，歡迎有興趣的創作者聯繫。",
-          tags: ["招募"],
-          reward: "合作分潤",
-          postedAt: Date.now() - 2 * 24 * 60 * 60 * 1000 // 2天前
-        },
-        {
-          id: "f4",
-          title: "網站功能更新通知",
-          category: "系統",
-          description: "新增瀑布流展示、圖片管理系統等功能，提升瀏覽體驗。",
-          tags: ["System"],
-          reward: "",
-          postedAt: Date.now() - 3 * 24 * 60 * 60 * 1000 // 3天前
-        },
-        {
-          id: "f5",
-          title: "手繪技法分享",
-          category: "教學",
-          description: "分享最新的數位手繪技巧和創作心得，歡迎交流學習。",
-          tags: ["教學"],
-          reward: "知識分享",
-          postedAt: Date.now() - 5 * 24 * 60 * 60 * 1000 // 5天前
-        },
-        {
-          id: "f6",
-          title: "社群互動活動",
-          category: "活動",
-          description: "在社群平台分享喜愛的作品並標記我們，有機會獲得限定周邊。",
-          tags: ["Social"],
-          reward: "限定周邊",
-          postedAt: Date.now() - 7 * 24 * 60 * 60 * 1000 // 7天前
-        },
-        {
-          id: "f7",
-          title: "創作材料推薦",
-          category: "分享",
-          description: "推薦好用的繪圖工具和材料，幫助大家提升創作效率。",
-          tags: ["推薦"],
-          reward: "實用資訊",
-          postedAt: Date.now() - 10 * 24 * 60 * 60 * 1000 // 10天前
-        }
-      ],
+      flyers: [],
       
       // 篩選器選項
       filters: [
@@ -243,8 +179,8 @@ export default {
       viewMode: "carousel",
       currentIndex: 0,
       visibleCount: 3,
-      cardWidth: 200,
-      gap: 16
+      cardWidth: 350, // 增加卡片寬度
+      gap: 30      // 增加間距
     };
   },
   computed: {
@@ -317,27 +253,20 @@ export default {
     }
   },
   
+  async mounted() {
+    // 從服務獲取布告欄數據
+    this.flyers = await announcementService.getAnnouncements();
+  },
+  
   methods: {
     // 生成隨機旋轉角度，讓布告看起來更自然
     getRandomRotation() {
-      return (Math.random() * 4 - 2).toFixed(2);
+      return (Math.random() * 2 - 1).toFixed(2);
     },
     
     // 格式化時間顯示
     formatTimeAgo(timestamp) {
-      const now = Date.now();
-      const diff = now - timestamp;
-      const minutes = Math.floor(diff / (1000 * 60));
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      
-      if (minutes < 60) {
-        return `${minutes} 分鐘前`;
-      } else if (hours < 24) {
-        return `${hours} 小時前`;
-      } else {
-        return `${days} 天前`;
-      }
+      return announcementService.formatTimeAgo(timestamp);
     },
     
     // 篩選器切換
@@ -379,15 +308,9 @@ export default {
     
     // 點擊公告跳轉（可以跳轉到告示板頁面的特定公告）
     goToAnnouncement(id) {
-      // 現在跳轉到告示板頁面，未來可以加上錨點定位到特定公告
-      this.$router.push(`/board#announcement-${id}`);
-    },
-    
-    // 跳轉到完整布告欄
-    goToBoard() {
-      this.$router.push('/board');
+      // 跳轉到告示板頁面，並傳遞公告ID
+      this.$router.push(`/board?announcement=${id}`);
     }
   }
 };
 </script>
-

@@ -125,14 +125,15 @@
                       :key="index"
                       class="gallery-item"
                     >
+                      <!-- 處理物件格式 -->
                       <img 
-                        v-if="item.type === 'image'"
-                        :src="item.url"
-                        :alt="item.title"
-                        @click="openLightbox(item.url, item.title)"
+                        v-if="(typeof item === 'object' && item.type === 'image') || typeof item === 'string'"
+                        :src="typeof item === 'object' ? item.url : item"
+                        :alt="typeof item === 'object' ? item.title : `${selectedWork.title} - 相關圖片`"
+                        @click="openLightbox(typeof item === 'object' ? item.url : item, typeof item === 'object' ? item.title : `${selectedWork.title} - 相關圖片`)"
                         class="gallery-image"
                       />
-                      <div v-else-if="item.type === 'youtube'" class="youtube-container">
+                      <div v-else-if="typeof item === 'object' && item.type === 'youtube'" class="youtube-container">
                         <iframe
                           :src="getYouTubeEmbedUrl(item.url)"
                           :title="item.title"
@@ -142,8 +143,8 @@
                           allowfullscreen
                         ></iframe>
                       </div>
-                      <div v-else class="placeholder-image">
-                        <p>{{ item.title }}</p>
+                      <div v-else-if="typeof item === 'object'" class="placeholder-image">
+                        <p>{{ item.title || '未知內容' }}</p>
                       </div>
                     </div>
                   </div>
@@ -262,6 +263,7 @@ import kaluImg from "../assets/kalu.webp";
 import alnImg from "../assets/aln.webp";
 import hiyaya from "../assets/iyaya.webp";
 import money01 from "../assets/money01.webp";
+import money02 from "../assets/money02.webp";
 // 選單圖
 import characterImg from "../assets/character_ligh.webp";
 import allImg from "../assets/all.webp";
@@ -376,9 +378,9 @@ export default {
             id: 3,
             title: "弓箭手小麥",
             category: "手繪",
-            description: "手繪龍族戰士設計稿",
+            description: "手繪弓箭手小麥",
             image: handImg,
-            gallery: [handImg, sketchImg],
+            gallery: [handImg],
             tags: ["手繪", "戰士", "龍族"],
             createdAt: "2024-01-10",
             software: ["傳統手繪"],
@@ -390,7 +392,7 @@ export default {
             category: "隨筆/塗鴉/梗圖",
             description: "隨手畫北極家的兔子",
             image: sketchImg,
-            gallery: [sketchImg, hiyaya],
+            gallery: [sketchImg],
             tags: ["龐克", "兔子", "塗鴉"],
             createdAt: "2024-04-01",
             software: ["iPad Pro", "Apple Pencil"],
@@ -402,7 +404,7 @@ export default {
             category: "場景插畫",
             description: "咖鹿與羊在城市一角的夜生活",
             image: kaluImg,
-            gallery: [kaluImg, sceneBImg, cWebpImg],
+            gallery: [kaluImg],
             tags: ["城市", "夜景", "生活"],
             createdAt: "2024-03-28",
             software: ["Photoshop", "Blender"],
@@ -410,12 +412,12 @@ export default {
           },
           {
             id: 6,
-            title: "我與師傅",
+            title: "師徒",
             category: "人物插畫", 
             description: "離別也是另一種開始",
             image: characterImg,
             gallery: [characterImg, cWebpImg],
-            tags: ["師傅", "離別", "情感"],
+            tags: ["師傅", "離別", "傷感"],
             createdAt: "2024-02-14",
             software: ["Procreate"],
             dimensions: "2048x2048"
@@ -635,17 +637,18 @@ export default {
 
     // 獲取模擬作品詳情
     async getMockWorkDetail(workId) {
-      // 導入需要的圖片
-      const cImage = (await import('../assets/c.webp')).default;
-      const sk01 = (await import('../assets/sk01.webp')).default;
-      const cl01 = (await import('../assets/cl01.webp')).default;
-      const flllWebpImg = (await import("../assets/flll.webp")).default;
-      const sk02 = (await import('../assets/sk02.webp')).default;
-      const cl02 = (await import('../assets/cl02.webp')).default;
-      const dlc02a = (await import('../assets/dlc02-1.webp')).default;
-      const dlc02b = (await import('../assets/dlc02-2.webp')).default;
-      const kaluImg = (await import("../assets/kalu.webp")).default;
-      const alnImg = (await import("../assets/aln.webp")).default;
+  // 導入需要的圖片
+  const cImage = (await import('../assets/c.webp')).default;
+  const sk01 = (await import('../assets/sk01.webp')).default;
+  const cl01 = (await import('../assets/cl01.webp')).default;
+  const flllWebpImg = (await import("../assets/flll.webp")).default;
+  const sk02 = (await import('../assets/sk02.webp')).default;
+  const cl02 = (await import('../assets/cl02.webp')).default;
+  const dlc02a = (await import('../assets/dlc02-1.webp')).default;
+  const dlc02b = (await import('../assets/dlc02-2.webp')).default;
+  const kaluImg = (await import("../assets/kalu.webp")).default;
+  const alnImg = (await import("../assets/aln.webp")).default;
+  const hiyayaImg = (await import("../assets/iyaya.webp")).default;
 
       const mockWorks = {
         '1': {
@@ -687,16 +690,92 @@ export default {
           id: '3',
           title: '弓箭手小麥',
           category: '手繪',
-          description: '手繪龍族戰士設計稿。使用傳統媒材繪製的角色設計，展現了精細的線條工藝和豐富的細節表現。',
+          description: '',
           date: '2024年1月20日',
-          dimensions: 'A4 紙本',
+          dimensions: 'A5 紙本',
           software: '鉛筆、針筆、麥克筆',
           process: '純手繪作品，從初步草圖到完稿約花費8小時。特別注重盔甲細節和武器設計的合理性。',
+          image: handImg,
+          gallery: []
+        },
+        '4': {
+          id: '4',
+          title: '龐克兔兔',
+          category: '隨筆/塗鴉/梗圖',
+          description: '隨手畫北極佳的兔子',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
+          image: sketchImg,
+          gallery: []
+        },
+        '5': {
+          id: '5',
+          title: '痞痞潮潮ㄉ羊跟鹿',
+          category: '場景插畫',
+          description: '城市夜生活',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
           image: kaluImg,
           gallery: [
-            { type: 'image', url: alnImg, title: '初稿設計' }
+            { type: 'youtube', url: 'https://youtu.be/Ggeu1xIXGsk', title: '創作過程影片' },
           ]
-        }
+        },
+        '6': {
+          id: '6',
+          title: '師徒',
+          category: '人物插畫',
+          description: '離別也是另一種開始',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '原創',
+          image: characterImg,
+          gallery: []
+        },
+        '7': {
+          id: '7',
+          title: '出發冒險新世界',
+          category: '場景插畫',
+          description: '2024獸與地下城主題投稿',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
+          image: sceneBImg,
+          gallery: []
+        },
+        '8': {
+          id: '8',
+          title: 'HEYYEYAAEYAAAEYAEYAA',
+          category: '隨筆/塗鴉/梗圖',
+          description: '經典迷因永流傳',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '二創',
+          image: hiyayaImg,
+          gallery: [
+            { type: 'youtube', url: 'https://youtu.be/ZZ5LpwO-An4', title: '梗的影片' },
+          ]
+        },
+        '9': {
+          id: '9',
+          title: 'No money no commission.',
+          category: '隨筆/塗鴉/梗圖',
+          description: '有差分梗圖',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
+          image: money01,
+          gallery: [
+            { type: 'image', url: money02, title: '差分' }
+          ]
+        },
       };
       
       return mockWorks[workId] || {
@@ -715,6 +794,8 @@ export default {
 
     // 燈箱相關方法
     openLightbox(imageUrl, title, imageIndex = 0) {
+      console.log('Opening lightbox with:', { imageUrl, title }); // 調試用
+      
       // 收集所有圖片（包括主圖和相關圖片）
       const allImages = [];
       
@@ -726,17 +807,27 @@ export default {
         });
       }
       
-      // 添加相關圖片（排除YouTube影片）
+      // 添加相關圖片（支援兩種格式）
       if (this.selectedWork.gallery) {
         this.selectedWork.gallery.forEach(item => {
-          if (item.type === 'image') {
+          // 處理物件格式的 gallery（詳細頁面）
+          if (typeof item === 'object' && item.type === 'image') {
             allImages.push({
               url: item.url,
               title: item.title || `${this.selectedWork.title} - 相關圖片`
             });
+          } 
+          // 處理字串格式的 gallery（列表頁面）
+          else if (typeof item === 'string') {
+            allImages.push({
+              url: item,
+              title: `${this.selectedWork.title} - 相關圖片`
+            });
           }
         });
       }
+      
+      console.log('All images collected:', allImages); // 調試用
       
       // 找到當前圖片的索引
       let currentIndex = allImages.findIndex(img => img.url === imageUrl);
@@ -750,10 +841,13 @@ export default {
         images: allImages
       };
       
+      console.log('Lightbox state set:', this.lightbox); // 調試用
+      
       document.addEventListener('keydown', this.handleKeydown);
     },
 
     closeLightbox() {
+      console.log('Closing lightbox'); // 調試用
       this.lightbox.show = false;
       document.removeEventListener('keydown', this.handleKeydown);
     },

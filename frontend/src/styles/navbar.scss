@@ -1,4 +1,9 @@
-// Navbar SCSS - 單行布局
+// Navbar SCSS - 響應式設計
+
+// 變量定義
+$breakpoint-mobile: 768px;
+$breakpoint-small: 480px;
+
 .navbar {
   position: sticky;
   top: 0;
@@ -7,33 +12,97 @@
   background: rgba(217, 217, 217, .8);
   box-shadow: 0 4px 20px rgba(0, 0, 0, .1);
   border-radius: 0 0 20px 20px;
-
   backdrop-filter: blur(10px);
 
   .nav-container {
-    display: grid;
+    display: flex;
     align-items: center;
-    max-width: 90%;
+    justify-content: center;
+    max-width: 1200px;
     height: 100px;
-    padding-left: 140px;
     margin: 0 auto;
+    position: relative;
+  }
 
-    gap: 20px;
-    grid-template-columns: repeat(10, 1fr);
+  // 漢堡選單樣式
+  .hamburger-menu {
+    display: none; // 默認隱藏
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 22px;
+    cursor: pointer;
+    z-index: 110;
+    position: absolute;
+    left: 20px;
+    
+    span {
+      display: block;
+      width: 100%;
+      height: 3px;
+      background-color: #333;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+    
+    &:hover span {
+      background-color: #666;
+    }
+    
+    &.active {
+      span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+      }
+      
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      
+      span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+      }
+    }
+  }
+
+  // 導航鏈接容器
+  .nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    
+    // 左右兩側的導航組
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex: 1;
+      
+      &.left-group {
+        justify-content: flex-end;
+        padding-right: 20px;
+      }
+      
+      &.right-group {
+        justify-content: flex-start;
+        padding-left: 20px;
+      }
+    }
   }
 
   .nav-logo {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    margin: 0 auto;
+    width: 120px;
+    height: 100px;
     // Tilt.js 相關樣式
     transform-style: preserve-3d;
     transform: perspective(1000px);
     will-change: transform;
     transition: transform 0.1s ease;
     cursor: pointer;
+    z-index: 5;
 
     img {
       width: auto;
@@ -65,16 +134,13 @@
     }
   }
 
-  // 移除 nav-menu 相關樣式，因為現在使用 grid 直接排列
-
   .nav-link {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    min-width: 80px;
     min-height: 70px;
     padding: 10px 8px;
-    margin: 0 auto;
     color: #333;
     text-decoration: none;
     background: transparent;
@@ -132,55 +198,129 @@
       color: #333;
     }
   }
+  
+  // 移動設備登入按鈕
+  .mobile-login-icon {
+    display: none;
+    min-width: auto;
+    min-height: auto;
+    padding: 10px;
+    font-size: 20px;
+    position: absolute;
+    right: 20px;
+  }
 }
 
 // 響應式設計
-@media (max-width: 768px) {
+@media (max-width: $breakpoint-mobile) {
   .navbar {
     padding: 16px 24px;
 
-    .nav-menu {
-      font-size: 14px;
-
-      gap: 20px;
-    }
-
-    .nav-logo img {
+    .nav-container {
       height: 80px;
     }
-
+    
+    // 顯示漢堡選單
+    .hamburger-menu {
+      display: flex;
+    }
+    
+    // Logo 保持居中
+    .nav-logo {
+      width: auto;
+      height: 80px;
+      
+      img {
+        height: 80px;
+      }
+    }
+    
+    // 顯示移動設備登入按鈕
+    .mobile-login-icon {
+      display: flex;
+    }
+    
+    // 隱藏桌面登入按鈕
+    .desktop-login {
+      display: none;
+    }
+    
+    // 導航選單變為全屏下拉選單
+    .nav-links {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      flex-direction: column;
+      justify-content: center;
+      background: rgba(217, 217, 217, .95);
+      backdrop-filter: blur(10px);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 100;
+      padding: 80px 20px;
+      gap: 15px;
+      
+      &.active {
+        transform: translateX(0);
+      }
+      
+      // 移動設備上的導航組
+      .nav-group {
+        flex-direction: column;
+        padding: 0;
+        width: 100%;
+        
+        &.left-group, &.right-group {
+          justify-content: center;
+          padding: 0;
+        }
+      }
+      
+      // 移動設備上的Logo
+      .nav-logo {
+        order: -1; // 確保Logo在最上方
+        margin-bottom: 20px;
+      }
+    }
+    
     .nav-link {
-      padding: 8px 12px;
-      font-size: 14px;
+      width: 80%;
+      max-width: 300px;
     }
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: $breakpoint-small) {
   .navbar {
-    .nav-menu {
-      gap: 10px;
-    }
-
-    .nav-link {
-      padding: 6px 8px;
-      font-size: 12px;
-
-      span {
-        display: none; // 隱藏文字，只顯示圖示
-      }
+    padding: 12px 16px;
+    
+    .nav-container {
+      height: 70px;
     }
     
-    // 在移動設備上禁用 tilt 效果
-    .nav-logo {
-      transform: none !important;
-      
-      &::after {
-        display: none;
+    .nav-logo img {
+      height: 70px;
+    }
+    
+    .nav-links {
+      padding: 60px 15px;
+      gap: 12px;
+    }
+    
+    .nav-link {
+      min-height: 60px;
+      padding: 8px;
+    }
+    
+    .nav-text {
+      .chinese {
+        font-size: 0.85rem;
       }
       
-      img {
-        transform: none !important;
+      .english {
+        font-size: 0.65rem;
       }
     }
   }
@@ -207,4 +347,9 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+// 當漢堡選單打開時，禁止頁面滾動
+body.menu-open {
+  overflow: hidden;
 }
