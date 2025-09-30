@@ -75,9 +75,9 @@
                 <div class="english">Friends Links</div>
               </div>
             </router-link>
-            <router-link to="/login" class="nav-link button-container forge-btn login-icon desktop-login" @click="closeMobileMenu">
+            <!-- <router-link to="/login" class="nav-link button-container forge-btn login-icon desktop-login" @click="closeMobileMenu">
               <i class="fas fa-user"></i>
-            </router-link>
+            </router-link> -->
           </div>
         </div>
 
