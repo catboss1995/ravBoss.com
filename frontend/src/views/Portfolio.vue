@@ -193,8 +193,8 @@
               <p class="work-process">{{ selectedWork.process || '這個作品從概念發想到完成經歷了多個階段，包括草稿繪製、色彩設計、細節調整等步驟。' }}</p>
 
               <div class="work-actions">
-                <button class="btn btn-primary">聯絡委託</button>
-                <button class="btn">分享作品</button>
+                <button class="btn btn-primary" @click="copyWorkDetails">聯絡委託</button>
+                <button class="btn" @click="copyShareLink">分享作品</button>
               </div>
             </div>
           </div>
@@ -987,6 +987,29 @@ export default {
       
       return url;
     },
+
+    copyWorkDetails() {
+      if (this.selectedWork) {
+        const workDetails = `作品名稱: ${this.selectedWork.title}\n技術規格: ${this.selectedWork.dimensions}\n請至 Commission 填表委託`;
+        navigator.clipboard.writeText(workDetails).then(() => {
+          alert('作品資訊已複製到剪貼簿，請至 Commission 填表委託');
+        }).catch(err => {
+          console.error('複製失敗', err);
+          alert('複製失敗，請手動複製');
+        });
+      }
+    },
+    copyShareLink() {
+      if (this.selectedWork) {
+        const shareLink = `${window.location.origin}/portfolio/${this.selectedWork.id}`;
+        navigator.clipboard.writeText(shareLink).then(() => {
+          alert('分享連結已複製到剪貼簿');
+        }).catch(err => {
+          console.error('複製失敗', err);
+          alert('複製失敗，請手動複製');
+        });
+      }
+    }
   },
 };
 </script>
