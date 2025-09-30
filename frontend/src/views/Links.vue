@@ -208,8 +208,7 @@ export default {
           description: "",
           links: [
             { name: "微光手作坊", url: "https://www.threads.com/@tiny.light.foxy", icon: "" },
-            { name: "網頁", url: "https://techblog.example.com", icon: "" },
-            { name: "臉書", url: "https://facebook.com/techcreator", icon: "" }
+            { name: "Instagram", url: "https://www.instagram.com/noyeh1109", icon: "" },
           ],
         },
         {
@@ -224,8 +223,8 @@ export default {
           adImage: "adImage6", // 指定使用哪個廣告圖片
           links: [
             { name: "網頁", url: "https://portaly.cc/AkiyaKamikawa", icon: "" },
-            { name: "網頁", url: "https://techblog.example.com", icon: "" },
-            { name: "臉書", url: "https://facebook.com/techcreator", icon: "" }
+            { name: "facebook", url: "https://www.facebook.com/Akiya.Love.Izaya/", icon: "" },
+            { name: "X", url: "https://x.com/AkiyaKamikawaX", icon: "" }
           ],
           adLinks: [
             { title: "T恤預購中，10月1日截單", url: "https://forms.gle/2GBaQncurfhQwGvW8" },

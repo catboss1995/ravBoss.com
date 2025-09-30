@@ -376,9 +376,9 @@ export default {
             id: 3,
             title: "弓箭手小麥",
             category: "手繪",
-            description: "手繪龍族戰士設計稿",
+            description: "手繪弓箭手小麥",
             image: handImg,
-            gallery: [handImg, sketchImg],
+            gallery: [handImg],
             tags: ["手繪", "戰士", "龍族"],
             createdAt: "2024-01-10",
             software: ["傳統手繪"],
@@ -390,7 +390,7 @@ export default {
             category: "隨筆/塗鴉/梗圖",
             description: "隨手畫北極家的兔子",
             image: sketchImg,
-            gallery: [sketchImg, hiyaya],
+            gallery: [sketchImg],
             tags: ["龐克", "兔子", "塗鴉"],
             createdAt: "2024-04-01",
             software: ["iPad Pro", "Apple Pencil"],
@@ -402,7 +402,7 @@ export default {
             category: "場景插畫",
             description: "咖鹿與羊在城市一角的夜生活",
             image: kaluImg,
-            gallery: [kaluImg, sceneBImg, cWebpImg],
+            gallery: [kaluImg],
             tags: ["城市", "夜景", "生活"],
             createdAt: "2024-03-28",
             software: ["Photoshop", "Blender"],
@@ -687,16 +687,40 @@ export default {
           id: '3',
           title: '弓箭手小麥',
           category: '手繪',
-          description: '手繪龍族戰士設計稿。使用傳統媒材繪製的角色設計，展現了精細的線條工藝和豐富的細節表現。',
+          description: '',
           date: '2024年1月20日',
-          dimensions: 'A4 紙本',
+          dimensions: 'A5 紙本',
           software: '鉛筆、針筆、麥克筆',
           process: '純手繪作品，從初步草圖到完稿約花費8小時。特別注重盔甲細節和武器設計的合理性。',
-          image: kaluImg,
+          image: handImg,
+          gallery: []
+        },
+        '4': {
+          id: '4',
+          title: '龐克兔兔',
+          category: '隨筆/塗鴉/梗圖',
+          description: '隨手畫北極佳的兔子',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
+          image: sketchImg,
+          gallery: []
+        },
+        '5': {
+          id: '5',
+          title: '痞痞潮潮ㄉ羊跟鹿',
+          category: '場景插畫',
+          description: '城市夜生活',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
+          image: sketchImg,
           gallery: [
-            { type: 'image', url: alnImg, title: '初稿設計' }
+            { type: 'youtube', url: 'https://youtu.be/Ggeu1xIXGsk', title: '創作過程影片' },
           ]
-        }
+        },
       };
       
       return mockWorks[workId] || {
