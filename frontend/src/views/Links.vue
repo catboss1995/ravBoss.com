@@ -228,7 +228,7 @@ export default {
             { name: "臉書", url: "https://facebook.com/techcreator", icon: "" }
           ],
           adLinks: [
-            { title: "T恤預購中", url: "https://forms.gle/2GBaQncurfhQwGvW8" },
+            { title: "T恤預購中，10月1日截單", url: "https://forms.gle/2GBaQncurfhQwGvW8" },
           ]
         },
         {
