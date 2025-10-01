@@ -20,13 +20,13 @@
           <div class="nav-group left-group">
             <router-link to="/portfolio" class="nav-link button-container forge-btn" @click="closeMobileMenu">
               <div class="nav-text">
-                <div class="chinese">冒險歷程</div>
+                <div class="chinese">冒險相簿</div>
                 <div class="english">Portfolio</div>
               </div>
             </router-link>
             <router-link to="/commission" class="nav-link button-container forge-btn" @click="closeMobileMenu">
               <div class="nav-text">
-                <div class="chinese">鐵匠鋪</div>
+                <div class="chinese">委託鐵匠鋪</div>
                 <div class="english">Commission</div>
               </div>
             </router-link>

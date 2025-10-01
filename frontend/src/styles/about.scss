@@ -2,9 +2,16 @@
 .about-content {
   display: grid;
   align-items: start;
-
   gap: 2rem;
   grid-template-columns: 2fr 1fr;
+}
+
+.page-title {
+  text-align: center;
+  padding: .5rem;
+  margin-bottom: 30px;
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
 }
 
 .about-text {
@@ -83,7 +90,7 @@
 
 .plurk-btn {
   background: linear-gradient(135deg, #fa4300, #cc3d00);
-  
+
   &:hover {
     background: linear-gradient(135deg, #cc2200, #a34c00);
   }
@@ -91,7 +98,7 @@
 
 .bluesky-btn {
   background: linear-gradient(135deg, #00aaff, #0088cc);
-  
+
   &:hover {
     background: linear-gradient(135deg, #0088cc, #006699);
   }
@@ -99,7 +106,7 @@
 
 .instagram-btn {
   background: linear-gradient(135deg, #e4405f, #c13584, #833ab4);
-  
+
   &:hover {
     background: linear-gradient(135deg, #c13584, #a02d73, #7029a3);
   }
@@ -107,7 +114,7 @@
 
 .artstation-btn {
   background: linear-gradient(135deg, #13aff0, #0e8cc4);
-  
+
   &:hover {
     background: linear-gradient(135deg, #0e8cc4, #0b7098);
   }
@@ -115,7 +122,7 @@
 
 .discord-btn {
   background: linear-gradient(135deg, #a172da, #8b5bae);
-  
+
   &:hover {
     background: linear-gradient(135deg, #955bae, #764e94);
   }
@@ -123,7 +130,7 @@
 
 .deviantart-btn {
   background: linear-gradient(135deg, #05cc47, #04a037);
-  
+
   &:hover {
     background: linear-gradient(135deg, #04a037, #038029);
   }
@@ -134,16 +141,16 @@
   .about-content {
     grid-template-columns: 1fr;
   }
-  
+
   .social-buttons {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 10px;
   }
-  
+
   .social-btn {
     padding: 10px 12px;
     font-size: 13px;
-    
+
     i {
       font-size: 16px;
     }

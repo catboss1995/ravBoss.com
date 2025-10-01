@@ -6,7 +6,7 @@
   <div class="commission-container">
     <div class="form-container">
       <div class="header">
-        <h1><i class="fas fa-fire"></i>繪圖委託鐵匠鋪</h1>
+        <h1><i class="fas fa-fire"></i>繪圖委託鐵匠鋪 commission</h1>
         <p>線上委託表單系統 v1.0</p>
         <small class="icon-text">
           <i class="fas fa-calendar-alt"></i>

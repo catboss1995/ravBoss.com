@@ -3,16 +3,17 @@
 // 基礎頁面樣式
 .page-container {
   max-width: 1600px;
-  padding: 1rem;
+  padding: 2rem;
   margin: 0 auto;
 }
 
 .page-title {
-  margin-bottom: 2rem;
+  margin: 2rem;
   color: #2c3e50;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
   text-align: center;
+  font-family: 'Cinzel', serif;
 }
 
 // 載入中樣式

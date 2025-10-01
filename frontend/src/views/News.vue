@@ -144,9 +144,9 @@
     </div>
 
     <!-- 文章詳情彈窗 -->
-    <div v-if="selectedPost" class="post-modal" @click.self="selectedPost = null">
+    <div v-if="selectedPost" class="post-modal" @click.self="closePost">
       <div class="post-modal-content">
-        <button @click="selectedPost = null" class="close-btn">×</button>
+        <button @click="closePost" class="close-btn">×</button>
         
         <img :src="selectedPost.image" alt="文章封面" class="modal-image">
         
@@ -265,6 +265,11 @@ export default {
   watch: {
     selectedCategory() {
       this.currentPage = 1
+    },
+    selectedPost(newVal) {
+      if (!newVal) {
+        document.body.style.overflow = 'auto'
+      }
     }
   },
   async created() {
@@ -432,6 +437,11 @@ export default {
       } else {
         this.selectedPost.views = 1
       }
+    },
+    
+    closePost() {
+      this.selectedPost = null
+      document.body.style.overflow = 'auto'
     }
   },
   beforeUnmount() {

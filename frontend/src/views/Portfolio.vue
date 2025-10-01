@@ -4,7 +4,7 @@
 
 <template>
   <div class="page-container">
-    <h1 class="page-title">點圖可查看創作細節與委託過程</h1>
+    <h1 class="page-title">冒險相簿 Portfolio</h1>
 
     <div v-if="loading" class="loading">
       <div class="spinner"></div>
