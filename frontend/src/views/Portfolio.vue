@@ -125,14 +125,15 @@
                       :key="index"
                       class="gallery-item"
                     >
+                      <!-- 處理物件格式 -->
                       <img 
-                        v-if="item.type === 'image'"
-                        :src="item.url"
-                        :alt="item.title"
-                        @click="openLightbox(item.url, item.title)"
+                        v-if="(typeof item === 'object' && item.type === 'image') || typeof item === 'string'"
+                        :src="typeof item === 'object' ? item.url : item"
+                        :alt="typeof item === 'object' ? item.title : `${selectedWork.title} - 相關圖片`"
+                        @click="openLightbox(typeof item === 'object' ? item.url : item, typeof item === 'object' ? item.title : `${selectedWork.title} - 相關圖片`)"
                         class="gallery-image"
                       />
-                      <div v-else-if="item.type === 'youtube'" class="youtube-container">
+                      <div v-else-if="typeof item === 'object' && item.type === 'youtube'" class="youtube-container">
                         <iframe
                           :src="getYouTubeEmbedUrl(item.url)"
                           :title="item.title"
@@ -142,8 +143,8 @@
                           allowfullscreen
                         ></iframe>
                       </div>
-                      <div v-else class="placeholder-image">
-                        <p>{{ item.title }}</p>
+                      <div v-else-if="typeof item === 'object'" class="placeholder-image">
+                        <p>{{ item.title || '未知內容' }}</p>
                       </div>
                     </div>
                   </div>
@@ -192,8 +193,8 @@
               <p class="work-process">{{ selectedWork.process || '這個作品從概念發想到完成經歷了多個階段，包括草稿繪製、色彩設計、細節調整等步驟。' }}</p>
 
               <div class="work-actions">
-                <button class="btn btn-primary">聯絡委託</button>
-                <button class="btn">分享作品</button>
+                <button class="btn btn-primary" @click="copyWorkDetails">聯絡委託</button>
+                <button class="btn" @click="copyShareLink">分享作品</button>
               </div>
             </div>
           </div>
@@ -262,6 +263,7 @@ import kaluImg from "../assets/kalu.webp";
 import alnImg from "../assets/aln.webp";
 import hiyaya from "../assets/iyaya.webp";
 import money01 from "../assets/money01.webp";
+import money02 from "../assets/money02.webp";
 // 選單圖
 import characterImg from "../assets/character_ligh.webp";
 import allImg from "../assets/all.webp";
@@ -635,17 +637,18 @@ export default {
 
     // 獲取模擬作品詳情
     async getMockWorkDetail(workId) {
-      // 導入需要的圖片
-      const cImage = (await import('../assets/c.webp')).default;
-      const sk01 = (await import('../assets/sk01.webp')).default;
-      const cl01 = (await import('../assets/cl01.webp')).default;
-      const flllWebpImg = (await import("../assets/flll.webp")).default;
-      const sk02 = (await import('../assets/sk02.webp')).default;
-      const cl02 = (await import('../assets/cl02.webp')).default;
-      const dlc02a = (await import('../assets/dlc02-1.webp')).default;
-      const dlc02b = (await import('../assets/dlc02-2.webp')).default;
-      const kaluImg = (await import("../assets/kalu.webp")).default;
-      const alnImg = (await import("../assets/aln.webp")).default;
+  // 導入需要的圖片
+  const cImage = (await import('../assets/c.webp')).default;
+  const sk01 = (await import('../assets/sk01.webp')).default;
+  const cl01 = (await import('../assets/cl01.webp')).default;
+  const flllWebpImg = (await import("../assets/flll.webp")).default;
+  const sk02 = (await import('../assets/sk02.webp')).default;
+  const cl02 = (await import('../assets/cl02.webp')).default;
+  const dlc02a = (await import('../assets/dlc02-1.webp')).default;
+  const dlc02b = (await import('../assets/dlc02-2.webp')).default;
+  const kaluImg = (await import("../assets/kalu.webp")).default;
+  const alnImg = (await import("../assets/aln.webp")).default;
+  const hiyayaImg = (await import("../assets/iyaya.webp")).default;
 
       const mockWorks = {
         '1': {
@@ -688,10 +691,36 @@ export default {
           title: '弓箭手小麥',
           category: '手繪',
           description: '',
+          description: '',
           date: '2024年1月20日',
+          dimensions: 'A5 紙本',
           dimensions: 'A5 紙本',
           software: '鉛筆、針筆、麥克筆',
           process: '純手繪作品，從初步草圖到完稿約花費8小時。特別注重盔甲細節和武器設計的合理性。',
+          image: handImg,
+          gallery: []
+        },
+        '4': {
+          id: '4',
+          title: '龐克兔兔',
+          category: '隨筆/塗鴉/梗圖',
+          description: '隨手畫北極佳的兔子',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
+          image: sketchImg,
+          gallery: []
+        },
+        '5': {
+          id: '5',
+          title: '痞痞潮潮ㄉ羊跟鹿',
+          category: '場景插畫',
+          description: '城市夜生活',
+          date: '2024年2月20日',
+          dimensions: '1920x1080',
+          software: 'Clip Studio Paint',
+          process: '贈圖',
           image: handImg,
           gallery: []
         },
@@ -747,30 +776,30 @@ export default {
         },
         '8': {
           id: '8',
-          title: '痞痞潮潮ㄉ羊跟鹿',
-          category: '場景插畫',
-          description: '城市夜生活',
+          title: 'HEYYEYAAEYAAAEYAEYAA',
+          category: '隨筆/塗鴉/梗圖',
+          description: '經典迷因永流傳',
           date: '2024年2月20日',
           dimensions: '1920x1080',
           software: 'Clip Studio Paint',
-          process: '贈圖',
-          image: iyaya.webp,
+          process: '二創',
+          image: hiyayaImg,
           gallery: [
             { type: 'youtube', url: 'https://youtu.be/ZZ5LpwO-An4', title: '梗的影片' },
           ]
         },
         '9': {
           id: '9',
-          title: '痞痞潮潮ㄉ羊跟鹿',
-          category: '場景插畫',
-          description: '城市夜生活',
+          title: 'No money no commission.',
+          category: '隨筆/塗鴉/梗圖',
+          description: '有差分梗圖',
           date: '2024年2月20日',
           dimensions: '1920x1080',
           software: 'Clip Studio Paint',
           process: '贈圖',
-          image: kaluImg,
+          image: money01,
           gallery: [
-            { type: 'youtube', url: 'https://youtu.be/Ggeu1xIXGsk', title: '創作過程影片' },
+            { type: 'image', url: money02, title: '差分' }
           ]
         },
       };
@@ -791,6 +820,8 @@ export default {
 
     // 燈箱相關方法
     openLightbox(imageUrl, title, imageIndex = 0) {
+      console.log('Opening lightbox with:', { imageUrl, title }); // 調試用
+      
       // 收集所有圖片（包括主圖和相關圖片）
       const allImages = [];
       
@@ -802,17 +833,27 @@ export default {
         });
       }
       
-      // 添加相關圖片（排除YouTube影片）
+      // 添加相關圖片（支援兩種格式）
       if (this.selectedWork.gallery) {
         this.selectedWork.gallery.forEach(item => {
-          if (item.type === 'image') {
+          // 處理物件格式的 gallery（詳細頁面）
+          if (typeof item === 'object' && item.type === 'image') {
             allImages.push({
               url: item.url,
               title: item.title || `${this.selectedWork.title} - 相關圖片`
             });
+          } 
+          // 處理字串格式的 gallery（列表頁面）
+          else if (typeof item === 'string') {
+            allImages.push({
+              url: item,
+              title: `${this.selectedWork.title} - 相關圖片`
+            });
           }
         });
       }
+      
+      console.log('All images collected:', allImages); // 調試用
       
       // 找到當前圖片的索引
       let currentIndex = allImages.findIndex(img => img.url === imageUrl);
@@ -826,10 +867,13 @@ export default {
         images: allImages
       };
       
+      console.log('Lightbox state set:', this.lightbox); // 調試用
+      
       document.addEventListener('keydown', this.handleKeydown);
     },
 
     closeLightbox() {
+      console.log('Closing lightbox'); // 調試用
       this.lightbox.show = false;
       document.removeEventListener('keydown', this.handleKeydown);
     },
@@ -943,6 +987,29 @@ export default {
       
       return url;
     },
+
+    copyWorkDetails() {
+      if (this.selectedWork) {
+        const workDetails = `作品名稱: ${this.selectedWork.title}\n技術規格: ${this.selectedWork.dimensions}\n請至 Commission 填表委託`;
+        navigator.clipboard.writeText(workDetails).then(() => {
+          alert('作品資訊已複製到剪貼簿，請至 Commission 填表委託');
+        }).catch(err => {
+          console.error('複製失敗', err);
+          alert('複製失敗，請手動複製');
+        });
+      }
+    },
+    copyShareLink() {
+      if (this.selectedWork) {
+        const shareLink = `${window.location.origin}/portfolio/${this.selectedWork.id}`;
+        navigator.clipboard.writeText(shareLink).then(() => {
+          alert('分享連結已複製到剪貼簿');
+        }).catch(err => {
+          console.error('複製失敗', err);
+          alert('複製失敗，請手動複製');
+        });
+      }
+    }
   },
 };
 </script>

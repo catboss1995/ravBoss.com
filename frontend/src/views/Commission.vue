@@ -452,7 +452,7 @@ export default {
     script.onload = () => {
       // 腳本載入完成後初始化 EmailJS
       if (window.emailjs) {
-        window.emailjs.init(qMM3988HJ7nIXJgsk);
+        window.emailjs.init("qMM3988HJ7nIXJgsk"); // 修正：加上引號
       } else {
         console.error("EmailJS 未載入，請確認腳本是否正確引入");
       }
@@ -502,59 +502,23 @@ export default {
       this.submitting = true;
 
       try {
-        // 建立FormData物件用於上傳檔案
-        const formData = new FormData();
+        // 直接使用電子郵件服務發送表單內容
+        const formSummary = this.prepareFormSummary();
 
-        // 添加表單資料
-        Object.keys(this.form).forEach(key => {
-          if (key !== 'referenceFiles' && key !== 'termsAgreement') {
-            formData.append(key,
-              Array.isArray(this.form[key]) ? JSON.stringify(this.form[key]) : this.form[key]);
-          }
-        });
+        // 使用 EmailJS 發送電子郵件
+        await this.sendFormByEmail(formSummary);
 
-        // 添加條款同意資料
-        formData.append('termsAgreement', JSON.stringify(this.form.termsAgreement));
-
-        // 添加收件人電子郵件
-        formData.append('recipientEmail', this.recipientEmail);
-
-        // 添加檔案
-        this.form.referenceFiles.forEach((file, index) => {
-          formData.append(`referenceFile_${index}`, file);
-        });
-
-        // 嘗試發送到後端API
-        await axios.post("/api/commission", formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-
-        alert("委託已成功提交！我們會盡快與您聯絡。");
+        alert("委託已成功提交！\n\n我們已收到您的委託申請，謝謝您的信任！\n" +
+          `委託人: ${this.form.name}\n` +
+          `委託類型: ${this.getCommissionTypeName(this.form.commissionType)}\n` +
+          `角色名稱: ${this.form.characterName}\n` +
+          `預算: NT$${this.form.budget}\n\n` +
+          "我們會在 1-2 個工作天內回覆您！");
+        
         this.resetForm();
       } catch (error) {
-        console.error("提交委託失敗:", error);
-
-        // 使用電子郵件服務發送表單內容
-        try {
-          // 準備表單摘要
-          const formSummary = this.prepareFormSummary();
-
-          // 使用 EmailJS 發送電子郵件
-          await this.sendFormByEmail(formSummary);
-
-          alert("委託已成功提交！\n\n我們已收到您的委託申請，謝謝您的信任！\n" +
-            `委託人: ${this.form.name}\n` +
-            `委託類型: ${this.getCommissionTypeName(this.form.commissionType)}\n` +
-            `角色名稱: ${this.form.characterName}\n` +
-            `預算: NT$${this.form.budget}\n\n` +
-            "我們會在 1-2 個工作天內回覆您！");
-          this.resetForm();
-        } catch (Error) {
-          console.error("發送電子郵件失敗:", Error);
-          alert("提交委託時發生錯誤，請稍後再試或直接聯絡我們。");
-        }
+        console.error("發送電子郵件失敗:", error);
+        alert("提交委託時發生錯誤，請稍後再試或直接聯絡我們。\n錯誤詳情：" + error.message);
       } finally {
         this.submitting = false;
       }
@@ -611,10 +575,17 @@ export default {
     async sendFormByEmail(formSummary) {
       this.emailSending = true;
       try {
+        // 等待 EmailJS 載入
         if (!window.emailjs) {
-          throw new Error('EmailJS 未載入，請確認腳本是否正確引入');
+          // 嘗試等待一下 EmailJS 載入
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          if (!window.emailjs) {
+            throw new Error('EmailJS 未載入，請確認網路連線是否正常');
+          }
         }
 
+        console.log('準備發送電子郵件...');
+        
         // 發送電子郵件
         const result = await window.emailjs.send(
           this.emailjsServiceId,
@@ -623,11 +594,11 @@ export default {
             to_email: this.recipientEmail,
             subject: formSummary.subject,
             message: formSummary.body,
-            from_name: this.form.name,
-            reply_to: this.form.email,
-            commission_type: this.getCommissionTypeName(this.form.commissionType),
-            character_name: this.form.characterName,
-            budget: this.form.budget
+            from_name: this.form.name || '匿名用戶',
+            reply_to: this.form.email || 'no-reply@example.com',
+            commission_type: this.getCommissionTypeName(this.form.commissionType) || '未指定',
+            character_name: this.form.characterName || '未提供',
+            budget: this.form.budget || '未填寫'
           }
         );
 
