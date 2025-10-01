@@ -8,13 +8,8 @@
 
     <div v-if="loading" class="loading">
       <div class="spinner"></div>
-      <p>{{ loadingMessage }}</p>
-      <div v-if="loadingProgress > 0" class="loading-progress">
-        <div class="progress-bar">
-          <div class="progress-fill" :style="{ width: loadingProgress + '%' }"></div>
-        </div>
-        <span class="progress-text">{{ loadingProgress.toFixed(0) }}%</span>
-      </div>
+
+      <p>載入中...</p>
     </div>
 
     <div v-else>
@@ -28,7 +23,7 @@
           <!-- 這裡放分類圖片 -->
           <div class="filter-image">
             <img 
-              :src="loadedImages[category] || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPuWKoOi8ieS4rS4uLjwvdGV4dD48L3N2Zz4='" 
+              :src="getCategoryImage(category)" 
               :alt="category"
               class="category-img"
               @error="handleCategoryImageError($event, category)"
@@ -261,6 +256,20 @@
 import axios from "axios";
 import Masonry from "masonry-layout";
 import ImageManager from "../../../config/images.js";
+// 嘗試直接 import 圖片以確保載入
+import cWebpImg from "../assets/c.webp";
+import flllWebpImg from "../assets/flll.webp";
+import kaluImg from "../assets/kalu.webp";
+import alnImg from "../assets/aln.webp";
+import hiyaya from "../assets/iyaya.webp";
+import money01 from "../assets/money01.webp";
+import money02 from "../assets/money02.webp";
+// 選單圖
+import characterImg from "../assets/character_ligh.webp";
+import allImg from "../assets/all.webp";
+import handImg from "../assets/hand.webp";
+import sceneBImg from "../assets/sceneB.webp";
+import sketchImg from "../assets/sketch.webp";
 
 export default {
   name: "Portfolio",
@@ -268,13 +277,9 @@ export default {
     return {
       works: [],
       loading: true,
-      loadingMessage: "正在載入作品資料...",
-      loadingProgress: 0,
       selectedCategory: "全部",
       categories: ["全部", "場景插畫", "人物插畫", "手繪", "隨筆/塗鴉/梗圖"],
       masonry: null,
-      // 緩存已載入的圖片
-      loadedImages: {},
       // Modal 相關狀態
       showWorkModal: false,
       selectedWork: null,
@@ -314,9 +319,6 @@ export default {
     }
   },
   async mounted() {
-    // 預先載入分類圖片
-    this.loadCategoryImages();
-    
     await this.fetchWorks();
     // 在資料載入完成後初始化 Masonry
     this.$nextTick(() => {
@@ -339,140 +341,12 @@ export default {
     window.removeEventListener('resize', this.updateVisibleItems);
   },
   methods: {
-    // 預載入分類圖片
-    async loadCategoryImages() {
-      this.loadingMessage = "載入分類圖片...";
-      this.loadingProgress = 10;
-      
-      const categoryImagePaths = {
-        '全部': "../assets/all.webp",
-        '場景插畫': "../assets/sceneB.webp",
-        '人物插畫': "../assets/character_ligh.webp",
-        '手繪': "../assets/hand.webp",
-        '隨筆/塗鴉/梗圖': "../assets/sketch.webp"
-      };
-
-      try {
-        const promises = Object.entries(categoryImagePaths).map(async ([category, path]) => {
-          try {
-            const imageModule = await import(path);
-            this.loadedImages[category] = imageModule.default;
-          } catch (error) {
-            console.warn(`Failed to load category image for ${category}:`, error);
-          }
-        });
-        
-        await Promise.all(promises);
-        this.loadingProgress = 30;
-      } catch (error) {
-        console.error("載入分類圖片時發生錯誤:", error);
-      }
-    },
-
-    // 動態載入圖片資源
-    async loadImages() {
-      this.loadingMessage = "載入作品圖片...";
-      this.loadingProgress = 50;
-      
-      try {
-        console.log('Starting to load images...');
-        const images = await Promise.all([
-          import("../assets/c.webp"),
-          import("../assets/flll.webp"),
-          import("../assets/kalu.webp"),
-          import("../assets/aln.webp"),
-          import("../assets/iyaya.webp"),
-          import("../assets/money01.webp"),
-          import("../assets/money02.webp"),
-          import("../assets/character_ligh.webp"),
-          import("../assets/all.webp"),
-          import("../assets/hand.webp"),
-          import("../assets/sceneB.webp"),
-          import("../assets/sketch.webp")
-        ]);
-
-        this.loadingProgress = 80;
-
-        const imageMap = {
-          cWebpImg: images[0].default,
-          flllWebpImg: images[1].default,
-          kaluImg: images[2].default,
-          alnImg: images[3].default,
-          hiyaya: images[4].default,
-          money01: images[5].default,
-          money02: images[6].default,
-          characterImg: images[7].default,
-          allImg: images[8].default,
-          handImg: images[9].default,
-          sceneBImg: images[10].default,
-          sketchImg: images[11].default
-        };
-        
-        console.log('Images loaded:', imageMap);
-        return imageMap;
-      } catch (error) {
-        console.error("載入圖片失敗:", error);
-        return {};
-      }
-    },
-
-    // 載入作品詳細頁面所需的額外圖片
-    async loadDetailImages() {
-      try {
-        const images = await Promise.all([
-          import('../assets/c.webp'),
-          import('../assets/sk01.webp'),
-          import('../assets/cl01.webp'),
-          import("../assets/flll.webp"),
-          import('../assets/sk02.webp'),
-          import('../assets/cl02.webp'),
-          import('../assets/dlc02-1.webp'),
-          import('../assets/dlc02-2.webp'),
-          import("../assets/kalu.webp"),
-          import("../assets/aln.webp"),
-          import("../assets/iyaya.webp")
-        ]);
-
-        return {
-          cImage: images[0].default,
-          sk01: images[1].default,
-          cl01: images[2].default,
-          flllWebpImg: images[3].default,
-          sk02: images[4].default,
-          cl02: images[5].default,
-          dlc02a: images[6].default,
-          dlc02b: images[7].default,
-          kaluImg: images[8].default,
-          alnImg: images[9].default,
-          hiyayaImg: images[10].default
-        };
-      } catch (error) {
-        console.error("載入詳細圖片失敗:", error);
-        return {};
-      }
-    },
-
     async fetchWorks() {
-      // 無論是否從 API 獲取數據，都先載入本地圖片
-      this.loadingMessage = "載入圖片資源...";
-      this.loadingProgress = 20;
-      
-      const images = await this.loadImages();
-      const { cWebpImg, flllWebpImg, kaluImg, alnImg, hiyaya, money01, money02, characterImg, allImg, handImg, sceneBImg, sketchImg } = images;
-      
       try {
-        this.loadingMessage = "連接伺服器...";
-        this.loadingProgress = 50;
-        
         const response = await axios.get("/api/portfolio");
         this.works = response.data;
-        this.loadingProgress = 90;
       } catch (error) {
         console.error("獲取作品失敗:", error);
-        
-        this.loadingMessage = "載入本地作品資料...";
-        this.loadingProgress = 70;
-        
         // 使用完整的模擬資料
         this.works = [
           {
@@ -598,24 +472,10 @@ export default {
           }
         ];
       } finally {
-        this.loadingMessage = "完成載入";
-        this.loadingProgress = 100;
-        setTimeout(() => {
-          this.loading = false;
-          // 確保在載入完成後重新初始化瀑布流
-          this.$nextTick(() => {
-            if (this.masonry) {
-              this.masonry.reloadItems();
-              this.masonry.layout();
-            } else {
-              this.initMasonry();
-            }
-          });
-        }, 200); // 短暫顯示完成狀態
+        this.loading = false;
       }
     },
     initMasonry() {
-      console.log('Initializing Masonry...', this.$refs.masonryGrid);
       if (this.$refs.masonryGrid) {
         this.masonry = new Masonry(this.$refs.masonryGrid, {
           itemSelector: '.masonry-item',
@@ -623,9 +483,6 @@ export default {
           percentPosition: true,
           gutter: 0, // 移除間隔
         });
-        console.log('Masonry initialized:', this.masonry);
-      } else {
-        console.warn('masonryGrid ref not found');
       }
     },
     async filterByCategory(category) {
@@ -658,31 +515,23 @@ export default {
       ];
       return gradients[Math.floor(Math.random() * gradients.length)];
     },
-    async getCategoryImage(category) {
-      // 檢查緩存
-      if (this.loadedImages[category]) {
-        return this.loadedImages[category];
-      }
-
-      // 定義分類對應的圖片路徑
-      const categoryImagePaths = {
-        '全部': "../assets/all.webp",
-        '場景插畫': "../assets/sceneB.webp",
-        '人物插畫': "../assets/character_ligh.webp",
-        '手繪': "../assets/hand.webp",
-        '隨筆/塗鴉/梗圖': "../assets/sketch.webp"
+    getCategoryImage(category) {
+      // 特殊處理本地圖片，使用正確的 import 變數
+      const categoryImages = {
+        '全部': allImg,
+        '場景插畫': sceneBImg,
+        '人物插畫': characterImg,
+        '手繪': handImg,
+        '隨筆/塗鴉/梗圖': sketchImg
       };
       
+      // 如果有對應的本地圖片，直接返回
+      if (categoryImages[category]) {
+        return categoryImages[category];
+      }
+      
+      // 使用圖片管理器獲取分類圖片
       try {
-        // 動態載入對應的圖片
-        const imagePath = categoryImagePaths[category];
-        if (imagePath) {
-          const imageModule = await import(imagePath);
-          this.loadedImages[category] = imageModule.default;
-          return imageModule.default;
-        }
-        
-        // 使用圖片管理器獲取分類圖片
         return ImageManager.getCategoryImage(category);
       } catch (error) {
         console.warn('Failed to load category image:', category, error);
@@ -788,9 +637,18 @@ export default {
 
     // 獲取模擬作品詳情
     async getMockWorkDetail(workId) {
-      // 集中載入詳細頁面需要的額外圖片
-      const detailImages = await this.loadDetailImages();
-      const { cImage, sk01, cl01, flllWebpImg, sk02, cl02, dlc02a, dlc02b, kaluImg, alnImg, hiyayaImg } = detailImages;
+  // 導入需要的圖片
+  const cImage = (await import('../assets/c.webp')).default;
+  const sk01 = (await import('../assets/sk01.webp')).default;
+  const cl01 = (await import('../assets/cl01.webp')).default;
+  const flllWebpImg = (await import("../assets/flll.webp")).default;
+  const sk02 = (await import('../assets/sk02.webp')).default;
+  const cl02 = (await import('../assets/cl02.webp')).default;
+  const dlc02a = (await import('../assets/dlc02-1.webp')).default;
+  const dlc02b = (await import('../assets/dlc02-2.webp')).default;
+  const kaluImg = (await import("../assets/kalu.webp")).default;
+  const alnImg = (await import("../assets/aln.webp")).default;
+  const hiyayaImg = (await import("../assets/iyaya.webp")).default;
 
       const mockWorks = {
         '1': {
