@@ -1,53 +1,539 @@
-// Terms.vue (委託契約) 頁面樣式
+// Terms.vue (委託契約) 頁面樣式 - 卷軸風格
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+.page-container {
+  background: 
+    radial-gradient(circle at 20% 50%, #4e4e4e 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, #353535 0%, transparent 50%),
+    linear-gradient(135deg, #3e3e3e, #2d1b0e, #4f4f4f, #515151);
+  min-height: 100vh;
+  font-family: 'Crimson Text', serif;
+  overflow-x: hidden;
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+.page-title {
+  text-align: center;
+  color: #dfdacc;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 30px 0;
+  font-family: 'Cinzel', serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.nav-toggle {
+  position: fixed;
+  top: 35%;
+  left: 0;
+  transform: translateY(-50%);
+  z-index: 1002;
+  background: rgba(255, 255, 255, 0.9);
+  color: #666666;
+  border: 2px solid #353535;
+  border-left: none;
+  padding: 25px 25px;
+  border-radius:0 8px 8px 0 ;
+  cursor: pointer;
+  font-size: 25px;
+  transition: all 0.3s ease;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Cinzel', serif;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-50%) translateX(-5px);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+    border-color: #353535;
+  }
+}
+
+.floating-nav {
+  position: fixed;
+  right: -380px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 360px;
+  z-index: 1001;
+  transition: right 0.5s ease;
+
+  &.open {
+    right: 20px;
+  }
+}
+
+.nav-card {
+  background: linear-gradient(145deg, rgba(26, 15, 10, 0.98), rgba(45, 27, 14, 0.98));
+  border: 3px solid rgba(131, 131, 131, 0.4);
+  border-radius: 25px;
+  padding: 30px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.nav-title {
+  text-align: center;
+  color: #f4e4bc;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(135, 135, 135, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: 'Cinzel', serif;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  padding: 18px 25px;
+  margin: 12px 0;
+  color: #d4c4a8;
+  background: linear-gradient(145deg, rgba(70, 70, 70, 0.3), rgba(62, 62, 62, 0.2));
+  border: 1px solid #353535;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Cinzel', serif;
+
+  &:hover {
+    background: linear-gradient(145deg, rgba(78, 78, 78, 0.5), rgba(74, 74, 74, 0.4));
+    color: #f4e4bc;
+    transform: translateX(10px);
+  }
+
+  &.active {
+    background: linear-gradient(145deg, #353535, #64646466);
+    color: #f4e4bc;
+    border-color: rgba(218, 165, 32, 0.8);
+    transform: translateX(10px);
+  }
+}
+
+.nav-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #d4c4a8;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #f4e4bc;
+    background: #353535;
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+
+  &.show {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.scroll-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px 20px;
+  z-index: 2;
+  position: relative;
+}
+
+.scroll-wrapper {
+  position: relative;
+  padding-right: 0;
+}
+
+.scroll-content {
+  background: 
+    radial-gradient(circle at 400px 500px, #faf8f2 200px, #f5f1e8 400px, #ebe3c8 600px);
+  width: 1100px;
+  min-height: auto;
+  position: relative;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  
+  // 卷軸主體
+  &::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 40px;
+    background: #fefcf4;
+    border: 4px solid #8b6914;
+    border-radius: 10px;
+    box-shadow: inset 0 0 50px rgba(139, 69, 19, 0.1);
+  }
+  
+  // 上方木質滾軸
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 40px;
+    right: 40px;
+    height: 40px;
+    background: linear-gradient(to bottom, #d4af8c, #a67c52, #6b4423);
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// 下方木質滾軸
+.scroll-content .bottom-rod {
+  position: absolute;
+  bottom: 0;
+  left: 40px;
+  right: 40px;
+  height: 40px;
+  background: linear-gradient(to bottom, #d4af8c, #a67c52, #6b4423);
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
 .terms-content {
-  max-width: 800px;
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
   margin: 0 auto;
+  padding: 120px 60px 120px 60px;
   line-height: 1.8;
+  color: #2c1810;
+}
+
+.scroll-title {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 30px;
+  background: rgba(218, 165, 32, 0.1);
+  border-radius: 15px;
+  
+  h1 {
+    color: #2c1810;
+    font-size: 2.5rem;
+    font-weight: bold;
+    font-family: 'Cinzel', serif;
+    margin-bottom: 15px;
+  }
+  
+  .subtitle {
+    color: #8b6914;
+    font-size: 1.5rem;
+    font-family: 'Cinzel', serif;
+  }
 }
 
 .terms-section {
-  padding-bottom: 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #ecf0f1;
+  padding: 20px 0;
+  margin-bottom: 30px;
+  border-bottom: 2px solid rgba(218, 165, 32, 0.2);
+  scroll-margin-top: 100px;
 
   &:last-of-type {
     border-bottom: none;
   }
 
   h2 {
-    margin-bottom: 1rem;
-    color: #2c3e50;
-    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: #2c1810;
+    font-size: 1.4rem;
+    font-weight: bold;
+    font-family: 'Cinzel', serif;
   }
 
   p {
-    margin-bottom: .5rem;
-    color: #2c3e50;
+    margin-bottom: 15px;
+    color: #3a3a3a;
+    font-size: 1.1rem;
+    font-family: 'Crimson Text', serif;
   }
 
   ul {
-    margin-left: 1.5rem;
-    color: #2c3e50;
+    margin-left: 25px;
+    color: #3a3a3a;
+    font-family: 'Crimson Text', serif;
   }
 
   li {
-    margin-bottom: .5rem;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
   }
 }
 
 .terms-footer {
-  padding: 1.5rem;
-  margin-top: 2rem;
+  padding: 30px;
+  margin-top: 40px;
   text-align: center;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  background: rgba(218, 165, 32, 0.1);
+  border-radius: 15px;
+  border: 2px solid rgba(218, 165, 32, 0.3);
 
   p {
-    margin-bottom: .5rem;
-    color: #7f8c8d;
+    margin-bottom: 10px;
+    color: #5a4a3a;
+    font-family: 'Crimson Text', serif;
 
     &:last-child {
       margin-bottom: 0;
     }
+
+    &:first-child {
+      font-weight: bold;
+      color: #2c1810;
+    }
+  }
+}
+
+// 委託流程樣式
+.workflow-section {
+  padding: 30px 0;
+  margin-bottom: 40px;
+  border-bottom: 2px solid rgba(218, 165, 32, 0.2);
+  scroll-margin-top: 100px;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #2c1810;
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: 'Cinzel', serif;
+  }
+}
+
+.workflow-container {
+  margin-bottom: 30px;
+}
+
+.workflow-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.step {
+  text-align: center;
+  position: relative;
+}
+
+.step-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 3px solid #CD853F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  }
+
+  i {
+    font-size: 2.2em;
+    color: #6c757d;
+  }
+}
+
+.step-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #8B4513;
+  margin-bottom: 8px;
+  font-family: 'Cinzel', serif;
+}
+
+.step-details {
+  color: #666;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  font-family: 'Crimson Text', serif;
+
+  .highlight {
+    color: #CD853F;
+    font-weight: bold;
+  }
+
+  .email {
+    color: #4A90E2;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: #357ABD;
+    }
+  }
+
+  .link {
+    color: #CD853F;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: #B8741A;
+    }
+  }
+}
+
+.note-section {
+  background: linear-gradient(135deg, #FFF8DC 0%, #F5DEB3 100%);
+  padding: 25px;
+  border-radius: 12px;
+  border-left: 4px solid #CD853F;
+  position: relative;
+
+  h3 {
+    color: #8B4513;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    font-family: 'Cinzel', serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  p {
+    color: #8B4513;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    font-family: 'Crimson Text', serif;
+    margin: 0;
+  }
+}
+
+// 響應式設計
+@media (max-width: 900px) {
+  .workflow-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .step-circle {
+    width: 80px;
+    height: 80px;
+    
+    i {
+      font-size: 1.8em;
+    }
+  }
+  
+  .step-title {
+    font-size: 1rem;
+  }
+  
+  .step-details {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .workflow-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .workflow-section h2 {
+    font-size: 1.5rem;
+  }
+  
+  .step-circle {
+    width: 90px;
+    height: 90px;
+    
+    i {
+      font-size: 2em;
+    }
+  }
+}
+
+// 響應式設計
+@media (max-width: 900px) {
+  .scroll-content {
+    width: 80vw;
+    max-width: 500px;
+  }
+  
+  .terms-content {
+    padding: 80px 60px;
+  }
+  
+  .floating-nav {
+    width: 320px;
+    right: -340px;
+    
+    &.open {
+      right: 10px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 1rem;
+    margin: 20px 60px;
+  }
+  
+  .nav-toggle {
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    padding: 12px 8px;
+    font-size: 14px;
+    border-radius:0 6px 6px 0;
+  }
+  
+  .terms-content {
+    padding: 60px 80px;
+  }
+  
+  .scroll-title h1 {
+    font-size: 1.5rem;
+  }
+  
+  .scroll-title .subtitle {
+    font-size: 1rem;
   }
 }

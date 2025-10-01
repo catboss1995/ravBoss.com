@@ -235,7 +235,7 @@ export default {
           avatar: "https://via.placeholder.com/100x100/E8E8E8/666666?text=頭貼",
           background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
           name: "有選單樣板",
-          location: "附註1", // 添加了 location 屬性
+          location: "歡迎加入，請洽站主", // 添加了 location 屬性
           title: "描述串",
           company: "",
           description: "",

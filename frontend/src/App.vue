@@ -82,9 +82,9 @@
         </div>
 
         <!-- 移動設備上的登入按鈕 -->
-        <router-link to="/login" class="nav-link mobile-login-icon">
+        <!-- <router-link to="/login" class="nav-link mobile-login-icon">
           <i class="fas fa-user"></i>
-        </router-link>
+        </router-link> -->
       </div>
     </nav>
 

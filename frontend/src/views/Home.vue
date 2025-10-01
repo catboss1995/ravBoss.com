@@ -5,7 +5,8 @@
 <template>
   <div class="page-container no-top-margin">
     <!-- 英雄橫幅區域 -->
-    <section class="hero-banner" :style="{ backgroundImage: `url(${heroBannerUrl}), linear-gradient(135deg, #667eea 0%, #764ba2 100%)` }">
+    <section class="hero-banner"
+      :style="{ backgroundImage: `url(${heroBannerUrl}), linear-gradient(135deg, #667eea 0%, #764ba2 100%)` }">
       <div class="hero-overlay">
         <div class="hero-content">
           <h1 class="hero-title">旅程起點 Journey Start</h1>
@@ -42,61 +43,43 @@
 
     <!-- 完整布告欄區域 -->
     <section class="bulletin" aria-labelledby="bulletin-title">
-      <div class="board-frame" :style="{ backgroundImage: `linear-gradient(rgba(74, 56, 44, 0.7), rgba(59, 45, 35, 0.8) 70%), url(${bulletinBgUrl})` }">
+      <div class="board-frame"
+        :style="{ backgroundImage: `linear-gradient(rgba(74, 56, 44, 0.7), rgba(59, 45, 35, 0.8) 70%), url(${bulletinBgUrl})` }">
         <header class="board-header">
           <h2 id="bulletin-title" class="board-title">布告欄 Board</h2>
           <div class="board-controls">
             <div class="filter-group">
-              <button 
-                type="button" 
-                v-for="filter in filters"
-                :key="filter.tag"
+              <button type="button" v-for="filter in filters" :key="filter.tag"
                 :class="['tag-filter', { 'is-active': activeFilter === filter.tag }]"
-                @click="setActiveFilter(filter.tag)"
-              >
+                @click="setActiveFilter(filter.tag)">
                 {{ filter.label }}
               </button>
             </div>
             <div class="search-group">
-              <input 
-                type="search" 
-                v-model="searchKeyword"
-                placeholder="搜尋公告..." 
-                aria-label="搜尋公告" 
-                @input="handleSearch"
-              />
+              <input type="search" v-model="searchKeyword" placeholder="搜尋公告..." aria-label="搜尋公告"
+                @input="handleSearch" />
             </div>
             <div class="view-modes">
-              <button 
-                :class="['mode-btn', { 'is-active': viewMode === 'carousel' }]" 
-                @click="setViewMode('carousel')" 
-                aria-label="輪播模式"
-              >
+              <button :class="['mode-btn', { 'is-active': viewMode === 'carousel' }]" @click="setViewMode('carousel')"
+                aria-label="輪播模式">
                 <p>卷軸</p>
               </button>
-              <button 
-                :class="['mode-btn', { 'is-active': viewMode === 'grid' }]" 
-                @click="setViewMode('grid')" 
-                aria-label="網格模式"
-              >
+              <button :class="['mode-btn', { 'is-active': viewMode === 'grid' }]" @click="setViewMode('grid')"
+                aria-label="網格模式">
                 <p>總覽</p>
               </button>
             </div>
           </div>
         </header>
-        
+
         <!-- 輪播模式 -->
-        <div v-show="viewMode === 'carousel'" class="carousel-region" role="region" aria-roledescription="carousel" aria-label="置頂公告">
+        <div v-show="viewMode === 'carousel'" class="carousel-region" role="region" aria-roledescription="carousel"
+          aria-label="置頂公告">
           <button class="nav-arrow prev" @click="slidePrev" :disabled="!canSlidePrev" aria-label="上一則">‹</button>
           <div class="carousel-viewport">
             <ul class="carousel-track" :style="{ transform: `translateX(${-currentIndex * (cardWidth + gap)}px)` }">
-              <li 
-                v-for="flyer in filteredFlyers" 
-                :key="flyer.id"
-                class="flyer"
-                tabindex="0"
-                @click="goToAnnouncement(flyer.id)"
-              >
+              <li v-for="flyer in filteredFlyers" :key="flyer.id" class="flyer" tabindex="0"
+                @click="goToAnnouncement(flyer.id)">
                 <article class="flyer-paper" :style="{ '--rand': getRandomRotation() }">
                   <div class="pin" aria-hidden="true"></div>
                   <h3 class="flyer-title">{{ flyer.title }}</h3>
@@ -116,16 +99,11 @@
           </div>
           <button class="nav-arrow next" @click="slideNext" :disabled="!canSlideNext" aria-label="下一則">›</button>
         </div>
-        
+
         <!-- 網格模式 -->
         <div v-show="viewMode === 'grid'" class="flyer-grid">
-          <li 
-            v-for="flyer in filteredFlyers" 
-            :key="flyer.id"
-            class="flyer"
-            tabindex="0"
-            @click="goToAnnouncement(flyer.id)"
-          >
+          <li v-for="flyer in filteredFlyers" :key="flyer.id" class="flyer" tabindex="0"
+            @click="goToAnnouncement(flyer.id)">
             <article class="flyer-paper" :style="{ '--rand': getRandomRotation() }">
               <div class="pin" aria-hidden="true"></div>
               <h3 class="flyer-title">{{ flyer.title }}</h3>
@@ -142,7 +120,7 @@
             </article>
           </li>
         </div>
-        
+
         <!-- 查看更多按鈕 -->
         <div class="view-more-container">
           <router-link to="/board" class="view-more-btn">查看更多公告</router-link>
@@ -163,7 +141,7 @@ export default {
     return {
       // 布告欄完整資料
       flyers: [],
-      
+
       // 篩選器選項
       filters: [
         { tag: "all", label: "全部" },
@@ -172,7 +150,7 @@ export default {
         { tag: "系統", label: "系統" },
         { tag: "招募", label: "招募" }
       ],
-      
+
       // 當前狀態
       activeFilter: "all",
       searchKeyword: "",
@@ -189,62 +167,62 @@ export default {
       // 使用 assets 導入的圖片
       return fantasyRiverScene;
     },
-    
+
     // 布告欄背景圖片
     bulletinBgUrl() {
       return redWoodBackground;
     },
-    
+
     // 篩選後的資料
     filteredFlyers() {
       let filtered = this.flyers;
-      
+
       // 類別篩選
       if (this.activeFilter !== "all") {
-        filtered = filtered.filter(flyer => 
-          flyer.category === this.activeFilter || 
+        filtered = filtered.filter(flyer =>
+          flyer.category === this.activeFilter ||
           flyer.tags.includes(this.activeFilter)
         );
       }
-      
+
       // 關鍵字搜尋
       if (this.searchKeyword.trim()) {
         const keyword = this.searchKeyword.toLowerCase().trim();
-        filtered = filtered.filter(flyer => 
+        filtered = filtered.filter(flyer =>
           flyer.title.toLowerCase().includes(keyword) ||
           flyer.description.toLowerCase().includes(keyword)
         );
       }
-      
+
       return filtered;
     },
-    
+
     // 輪播顯示的資料
     visibleFlyers() {
       if (this.viewMode === "grid") {
         return this.filteredFlyers;
       }
-      
+
       // 輪播模式：顯示當前索引開始的指定數量
       const start = this.currentIndex;
       const end = start + this.visibleCount;
       return this.filteredFlyers.slice(start, end);
     },
-    
+
     // 是否可以向左滑動
     canSlidePrev() {
       return this.currentIndex > 0;
     },
-    
+
     // 是否可以向右滑動
     canSlideNext() {
       return this.currentIndex + this.visibleCount < this.filteredFlyers.length;
     },
-    
+
     // 輪播容器樣式
     carouselStyle() {
       if (this.viewMode !== "carousel") return {};
-      
+
       const containerWidth = this.visibleCount * this.cardWidth + (this.visibleCount - 1) * this.gap;
       return {
         width: `${containerWidth}px`,
@@ -252,52 +230,52 @@ export default {
       };
     }
   },
-  
+
   async mounted() {
     // 從服務獲取布告欄數據
     this.flyers = await announcementService.getAnnouncements();
   },
-  
+
   methods: {
     // 生成隨機旋轉角度，讓布告看起來更自然
     getRandomRotation() {
       return (Math.random() * 2 - 1).toFixed(2);
     },
-    
+
     // 格式化時間顯示
     formatTimeAgo(timestamp) {
       return announcementService.formatTimeAgo(timestamp);
     },
-    
+
     // 篩選器切換
     setActiveFilter(tag) {
       this.activeFilter = tag;
       this.currentIndex = 0; // 重置輪播位置
     },
-    
+
     // 搜尋關鍵字
     handleSearch() {
       this.currentIndex = 0; // 重置輪播位置
     },
-    
+
     // 清除搜尋
     clearSearch() {
       this.searchKeyword = "";
       this.currentIndex = 0;
     },
-    
+
     // 切換檢視模式
     setViewMode(mode) {
       this.viewMode = mode;
     },
-    
+
     // 向左滑動
     slidePrev() {
       if (this.canSlidePrev) {
         this.currentIndex = Math.max(0, this.currentIndex - 1);
       }
     },
-    
+
     // 向右滑動
     slideNext() {
       if (this.canSlideNext) {
@@ -305,7 +283,7 @@ export default {
         this.currentIndex = Math.min(maxIndex, this.currentIndex + 1);
       }
     },
-    
+
     // 點擊公告跳轉（可以跳轉到告示板頁面的特定公告）
     goToAnnouncement(id) {
       // 跳轉到告示板頁面，並傳遞公告ID
